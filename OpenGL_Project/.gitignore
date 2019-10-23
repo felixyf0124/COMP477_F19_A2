@@ -1,0 +1,6 @@
+
+*.user
+*.opendb
+*.db
+*.ipch
+[Dd]ebug
