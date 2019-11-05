@@ -48,20 +48,20 @@ void createShaders() {
 	shaderList.push_back(*shader);
 }
 
-
 void problem1()
 {
 	window = new OGLWindow(window_w, window_h, APP_TITLE);
 	window->initialize();
 
-	camera_position = glm::vec3(5.0f, 5.0f, 1.0f);
+	camera_position = glm::vec3(5.0f, 0.0, 0.0f);
 	camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
 	camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	//glfwSetKeyCallback(window->getWindow(), keyCallback);
 
-
-	GLfloat sample_vertices[] = {
+	// Q1 values:
+	GLfloat pointlist[] =
+	{
 		-1.00, -1.00, 1.00,
 		-1.00, -1.00, -1.00,
 		1.00, -1.00, -1.00,
@@ -69,8 +69,34 @@ void problem1()
 		-1.00, 1.00, 1.00,
 		1.00, 1.00, 1.00,
 		1.00, 1.00, -1.00,
-		-1.00, 1.00, -1.00
+		-1.00, 1.00, -1.00,
+
+		0.00, -1.00, 1.00,
+		0.00, -1.00, -1.00,
+		0.00, 1.00, 1.00,
+		0.00, 1.00, -1.00,
+
+		-1.00, 0.00, 1.00,
+		-1.00, 0.00, -1.00,
+		1.00, 0.00, -1.00,
+		1.00, 0.00, 1.00,
+
+		-1.00, -1.00, 0.00,
+		1.00, -1.00, 0.00,
+		-1.00, 1.00, 0.00,
+		1.00, 1.00, 0.00,
+
+		0.00, 0.00, 1.00,
+		0.00, 0.00, -1.00,
+		0.00, 1.00, 0.00,
+		0.00, -1.00, 0.00,
+		0.00, 0.00, -1.00,
+		0.00, 0.00, 1.00,
+		1.00, 0.00, 0.00,
+		-1.00, 0.00, 0.00,
 	};
+	float sphereRadius = 2.0f;
+	vector<GLfloat> centerOfCube = { 0.0f, 0.0f, 0.0f };
 
 	GLuint sample_indices[] = {
 		0, 1, 2,
@@ -86,11 +112,8 @@ void problem1()
 		1, 0, 4,
 		4, 7, 1
 	};
-	GLuint vertics_size = 24;
+	GLuint vertics_size = sizeof(pointlist) / sizeof(*pointlist);
 	GLuint indices_size = 36;
-	OGLMesh* cube = new OGLMesh();
-	cube->createMesh(sample_vertices, sample_indices, vertics_size, indices_size);
-	meshList.push_back(cube);
 
 
 	//create shaders
@@ -100,12 +123,41 @@ void problem1()
 	model = glm::mat4(1.0f);
 	projection = glm::perspective(zoom, (GLfloat)window->getBufferWidth() / window->getBufferHeight(), 0.1f, 100.0f);
 
+	// Calculating the destination points for each point:
+	vector<glm::vec3> destPoints;
 
+	// For each point in the pointsList, calculate the unit vector pointing from the cube center towards that point.
+	// Then, obtain the new position of the point on the sphere:
+	for (int i = 0; i < (sizeof(pointlist) / sizeof(GLfloat)) / 3; ++i) // from 0 to # of points - 1
+	{
+		glm::vec3 point = { pointlist[i * 3], pointlist[i * 3 + 1], pointlist[i * 3 + 2] };
+		// Getting vector from cube center to point:
+		glm::vec3 pointVec = glm::vec3(point[0] - centerOfCube[0], point[1] - centerOfCube[2], point[2] - centerOfCube[2]);
+		// Get the distance between the point and cube center:
+		GLfloat distance = sqrt(pow((pointVec.x), 2) + pow((pointVec.y), 2) + pow((pointVec.z), 2));
+		// Get the unit vector:
+		glm::vec3 unitVector = pointVec / distance;
+		// Get the new point position:
+		glm::vec3 newPoint = unitVector * sphereRadius;
+		destPoints.push_back(newPoint);
+		pointlist[i * 3] = newPoint.x;
+		pointlist[i * 3 + 1] = newPoint.y;
+		pointlist[i * 3 + 2] = newPoint.z;
+	}
+	OGLMesh* cube = new OGLMesh();
+	cube->createMesh(pointlist, sample_indices, vertics_size, indices_size);
+	meshList.push_back(cube);
+
+	// Set drawing for thicker lines:
+	glPointSize(10.0f);
 
 	// Main loop
 	while (!window->getShouldClose())
 	{
+		// Get the time step of the animation:
 
+		// For each point, determine the portion of the distance at that point in the animation:
+		// Ideally, the animation will shift from cube to sphere for X seconds, pause for X seconds, then shift from sphere to cube again.
 
 		// Get & handle user input events
 		glfwPollEvents();
@@ -136,7 +188,9 @@ void problem1()
 		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform4fv(color_loc, 1, glm::value_ptr(color));
 
-		meshList[0]->drawMesh();
+		// Draw the points:
+
+		meshList[0]->drawPoints();
 
 		glUseProgram(0);
 
