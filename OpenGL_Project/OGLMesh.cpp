@@ -33,6 +33,7 @@ void OGLMesh::createMesh(const GLfloat* vertices, const GLuint* indices, GLuint 
 
 	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
 	glEnableVertexAttribArray(0);
 
 	//unbind
@@ -49,6 +50,7 @@ void OGLMesh::drawMesh()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
 	glDrawElements(GL_TRIANGLES, this->index_size, GL_UNSIGNED_INT, 0);
+	//glDrawElements(GL_LINE_STRIP, this->index_size, GL_UNSIGNED_INT, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);

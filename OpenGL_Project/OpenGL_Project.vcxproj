@@ -156,11 +156,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="objloader.cpp" />
     <ClCompile Include="OGLMesh.cpp" />
     <ClCompile Include="OGLShader.cpp" />
     <ClCompile Include="OGLWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="objloader.hpp" />
     <ClInclude Include="OGLMesh.h" />
     <ClInclude Include="OGLShader.h" />
     <ClInclude Include="OGLWindow.h" />

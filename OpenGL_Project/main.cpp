@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdio>
 
 #include"GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -13,6 +14,8 @@
 #include "OGLShader.h";
 #include "OGLWindow.h";
 #include "OGLMesh.h"
+
+#include "objloader.hpp"
 
 using namespace std;
 
@@ -54,7 +57,7 @@ int main()
 	window = new OGLWindow(window_w, window_h, APP_TITLE);
 	window->initialize();
 
-	camera_position = glm::vec3(5.0f, 5.0f, 1.0f);
+	camera_position = glm::vec3(6.0f, 5.0f, 2.0f);
 	camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
 	camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -86,10 +89,20 @@ int main()
 		1, 0, 4,
 		4, 7, 1
 	};
+
+	vector<GLfloat> loaded_vertices;
+	vector<GLuint> loaded_indices;
+
+	loadOBJ("2x2x2Box.obj", loaded_vertices, loaded_indices);
+	//loadOBJ("ball.obj", loaded_vertices, loaded_indices);
+	
+
 	GLuint vertics_size = 24;
 	GLuint indices_size = 36;
 	OGLMesh* cube = new OGLMesh();
-	cube->createMesh(sample_vertices, sample_indices, vertics_size, indices_size);
+	cube->createMesh(&loaded_vertices.at(0), &loaded_indices.at(0), loaded_vertices.size(), loaded_indices.size());
+
+	printf("%i",loaded_indices.size());
 	meshList.push_back(cube);
 	
 
@@ -135,6 +148,8 @@ int main()
 		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform4fv(color_loc, 1, glm::value_ptr(color));
+
+		//glDisable(GL_CULL_FACE);
 
 		meshList[0]->drawMesh();
 
