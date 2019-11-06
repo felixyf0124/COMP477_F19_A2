@@ -225,8 +225,9 @@ void problem1()
 			currentPoints[i * 3 + 2] = interpolationPoint.z;
 		}
 		// Update cube mesh:
-		//cube->createMesh(currentPoints, sample_indices, vertics_size, indices_size);
-		//meshList.push_back(cube);
+		
+		cube = new OGLMesh();
+		cube->createMesh(currentPoints, sample_indices, vertics_size, indices_size);
 
 		// Get & handle user input events
 		glfwPollEvents();
@@ -258,10 +259,8 @@ void problem1()
 		// Draw the points:
 
 		// meshList[0]->drawPoints();
-
-		// Clean up meshList:
-		// meshList[0]->clearMesh();
-		// meshList.pop_back();
+		cube->drawMesh();
+		
 
 		glUseProgram(0);
 
