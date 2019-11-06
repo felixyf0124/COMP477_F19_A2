@@ -48,6 +48,49 @@ void createShaders() {
 	shaderList.push_back(*shader);
 }
 
+int phase = 0;
+glm::vec3 animate_points(glm::vec3 cubePoint, glm::vec3 spherePoint, float currentPhaseTimeSpan, float timePerPhase)
+{
+	// Get the fraction of the current line traversed:
+	float timeFraction = currentPhaseTimeSpan / timePerPhase;
+	if (timeFraction >= 1)
+	{
+		phase++;
+		phase %= 4;
+	}
+
+	if (phase == 0) // Cube to sphere:
+	{
+		// Get location at given fraction of the way between current point and next point:
+		float x_diff = (spherePoint.x - cubePoint.x) * timeFraction;
+		float y_diff = (spherePoint.y - cubePoint.y) * timeFraction;
+		float z_diff = (spherePoint.z - cubePoint.z) * timeFraction;
+
+		// Set position to new point:
+		glm::vec3 newPos = cubePoint + glm::vec3(x_diff, y_diff, z_diff);
+		return newPos;
+	}
+	else if (phase == 1) // Stay on sphere:
+	{
+		return spherePoint;
+	}
+	else if (phase == 2) // Sphere to cube
+	{
+		// Get location at given fraction of the way between current point and next point:
+		float x_diff = (spherePoint.x - cubePoint.x) * timeFraction;
+		float y_diff = (spherePoint.y - cubePoint.y) * timeFraction;
+		float z_diff = (spherePoint.z - cubePoint.z) * timeFraction;
+
+		// Set position to new point:
+		glm::vec3 newPos = spherePoint - glm::vec3(x_diff, y_diff, z_diff);
+		return newPos;
+	}
+	else if (phase == 3)
+	{
+		return cubePoint;
+	}
+}
+
 void problem1()
 {
 	window = new OGLWindow(window_w, window_h, APP_TITLE);
@@ -60,7 +103,7 @@ void problem1()
 	//glfwSetKeyCallback(window->getWindow(), keyCallback);
 
 	// Q1 values:
-	GLfloat pointlist[] =
+	float pointlist[] =
 	{
 		-1.00, -1.00, 1.00,
 		-1.00, -1.00, -1.00,
@@ -96,7 +139,7 @@ void problem1()
 		-1.00, 0.00, 0.00,
 	};
 	float sphereRadius = 2.0f;
-	vector<GLfloat> centerOfCube = { 0.0f, 0.0f, 0.0f };
+	vector<float> centerOfCube = { 0.0f, 0.0f, 0.0f };
 
 	GLuint sample_indices[] = {
 		0, 1, 2,
@@ -140,29 +183,53 @@ void problem1()
 		// Get the new point position:
 		glm::vec3 newPoint = unitVector * sphereRadius;
 		destPoints.push_back(newPoint);
-		pointlist[i * 3] = newPoint.x;
-		pointlist[i * 3 + 1] = newPoint.y;
-		pointlist[i * 3 + 2] = newPoint.z;
 	}
-	OGLMesh* cube = new OGLMesh();
-	cube->createMesh(pointlist, sample_indices, vertics_size, indices_size);
-	meshList.push_back(cube);
 
 	// Set drawing for thicker lines:
 	glPointSize(10.0f);
+	// Time per phase:
+	float phaseLength = 2.0f;
+
+	// Initialize time variables:
+	float startTime = glfwGetTime();
+	float currentTime;
+	float lastTime = glfwGetTime();
+	float deltaTime = 0;
+	float timeElapsed;
+
+	float timePerPhase = 1.0f;
+	// Generate OGLMesh:
+	OGLMesh* cube = new OGLMesh();
 
 	// Main loop
 	while (!window->getShouldClose())
 	{
 		// Get the time step of the animation:
+		currentTime = glfwGetTime();
+		deltaTime = currentTime - lastTime;
+		lastTime = currentTime;
+		timeElapsed = currentTime - startTime;
 
 		// For each point, determine the portion of the distance at that point in the animation:
 		// Ideally, the animation will shift from cube to sphere for X seconds, pause for X seconds, then shift from sphere to cube again.
+		float currentPoints[27 * 3];
+
+		for (int i = 0; i < (sizeof(pointlist) / sizeof(GLfloat)) / 3; ++i) // from 0 to # of points - 1
+		{
+			glm::vec3 cubePoint = glm::vec3(pointlist[i * 3], pointlist[i * 3 + 1], pointlist[i * 3 + 2]);
+			glm::vec3 spherePoint = glm::vec3(destPoints[i].x, destPoints[i].y, destPoints[i].z);
+			glm::vec3 interpolationPoint = animate_points(cubePoint, spherePoint, fmod(timeElapsed, timePerPhase), timePerPhase);
+
+			currentPoints[i * 3] = interpolationPoint.x;
+			currentPoints[i * 3 + 1] = interpolationPoint.y;
+			currentPoints[i * 3 + 2] = interpolationPoint.z;
+		}
+		// Update cube mesh:
+		//cube->createMesh(currentPoints, sample_indices, vertics_size, indices_size);
+		//meshList.push_back(cube);
 
 		// Get & handle user input events
 		glfwPollEvents();
-
-
 
 		// Clear window 
 		glClearColor(0.1f, 0.2f, 0.1f, 1.0f);
@@ -190,7 +257,11 @@ void problem1()
 
 		// Draw the points:
 
-		meshList[0]->drawPoints();
+		// meshList[0]->drawPoints();
+
+		// Clean up meshList:
+		// meshList[0]->clearMesh();
+		// meshList.pop_back();
 
 		glUseProgram(0);
 
