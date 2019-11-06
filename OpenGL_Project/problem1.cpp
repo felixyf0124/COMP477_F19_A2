@@ -52,15 +52,12 @@ int phase = 0;
 glm::vec3 animate_points(glm::vec3 cubePoint, glm::vec3 spherePoint, float currentPhaseTimeSpan, float timePerPhase)
 {
 	// Get the fraction of the current line traversed:
-	float timeFraction = currentPhaseTimeSpan / timePerPhase;
-	if (timeFraction >= 1)
-	{
-		phase++;
-		phase %= 4;
-	}
+	float timeFraction = fmod(currentPhaseTimeSpan / timePerPhase,1);
+	int phase = currentPhaseTimeSpan / timePerPhase;
 
 	if (phase == 0) // Cube to sphere:
 	{
+		cout << timeFraction << endl;
 		// Get location at given fraction of the way between current point and next point:
 		float x_diff = (spherePoint.x - cubePoint.x) * timeFraction;
 		float y_diff = (spherePoint.y - cubePoint.y) * timeFraction;
@@ -72,21 +69,25 @@ glm::vec3 animate_points(glm::vec3 cubePoint, glm::vec3 spherePoint, float curre
 	}
 	else if (phase == 1) // Stay on sphere:
 	{
+		cout << 1 << endl;
 		return spherePoint;
 	}
 	else if (phase == 2) // Sphere to cube
 	{
+		cout << 1-timeFraction << endl;
 		// Get location at given fraction of the way between current point and next point:
-		float x_diff = (spherePoint.x - cubePoint.x) * timeFraction;
-		float y_diff = (spherePoint.y - cubePoint.y) * timeFraction;
-		float z_diff = (spherePoint.z - cubePoint.z) * timeFraction;
+		float x_diff = (spherePoint.x - cubePoint.x) * (1-timeFraction);
+		float y_diff = (spherePoint.y - cubePoint.y) * (1-timeFraction);
+		float z_diff = (spherePoint.z - cubePoint.z) * (1-timeFraction);
+		cout << x_diff << ", " << y_diff << ", " << z_diff << endl;
 
 		// Set position to new point:
-		glm::vec3 newPos = spherePoint - glm::vec3(x_diff, y_diff, z_diff);
+		glm::vec3 newPos = cubePoint + glm::vec3(x_diff, y_diff, z_diff);
 		return newPos;
 	}
 	else if (phase == 3)
 	{
+		cout << 0 << endl;
 		return cubePoint;
 	}
 }
@@ -96,7 +97,7 @@ void problem1()
 	window = new OGLWindow(window_w, window_h, APP_TITLE);
 	window->initialize();
 
-	camera_position = glm::vec3(5.0f, 0.0, 0.0f);
+	camera_position = glm::vec3(5.0f, 5.0, 5.0f);
 	camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
 	camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -218,7 +219,7 @@ void problem1()
 		{
 			glm::vec3 cubePoint = glm::vec3(pointlist[i * 3], pointlist[i * 3 + 1], pointlist[i * 3 + 2]);
 			glm::vec3 spherePoint = glm::vec3(destPoints[i].x, destPoints[i].y, destPoints[i].z);
-			glm::vec3 interpolationPoint = animate_points(cubePoint, spherePoint, fmod(timeElapsed, timePerPhase), timePerPhase);
+			glm::vec3 interpolationPoint = animate_points(cubePoint, spherePoint, fmod(timeElapsed, timePerPhase * 4), timePerPhase);
 
 			currentPoints[i * 3] = interpolationPoint.x;
 			currentPoints[i * 3 + 1] = interpolationPoint.y;
@@ -259,7 +260,7 @@ void problem1()
 		// Draw the points:
 
 		// meshList[0]->drawPoints();
-		cube->drawMesh();
+		cube->drawPoints();
 		
 
 		glUseProgram(0);
