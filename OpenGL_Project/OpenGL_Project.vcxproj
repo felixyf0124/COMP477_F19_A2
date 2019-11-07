@@ -161,6 +161,7 @@
     <ClCompile Include="OGLWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="OGLMesh.h" />
     <ClInclude Include="OGLShader.h" />
     <ClInclude Include="OGLWindow.h" />

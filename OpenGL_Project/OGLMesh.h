@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <GL/glew.h>
+#include "Constants.h"
 
 using namespace std;
 
@@ -20,5 +21,7 @@ public:
 private:
 	GLuint VAO, VBO, EBO;
 	GLuint vertex_size, index_size;
+	GLuint point_size, line_size;
+	RenderMode render_mode;
 };
 
