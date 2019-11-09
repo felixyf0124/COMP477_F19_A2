@@ -1,6 +1,7 @@
 
 #include "problem1.hpp"
 #include "problem2.hpp"
+#include "problem3.hpp"
 #include <iostream>
 using namespace std;
 
@@ -25,11 +26,11 @@ int main()
 			problem2();
 			break;
 		case 3:
-			cout << "Running Problem 1: Particle system." << endl << "Close the window to select another problem." << endl;
-			// problem3();
+			cout << "Running Problem 3: Particle system." << endl << "Close the window to select another problem." << endl;
+			problem3();
 			break;
 		case 4:
-			cout << "Running Problem 1: Mocap replay." << endl << "Close the window to select another problem." << endl;
+			cout << "Running Problem 4: Mocap replay." << endl << "Close the window to select another problem." << endl;
 			// problem4();
 			break;
 		case 0:
