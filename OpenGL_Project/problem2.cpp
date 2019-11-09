@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -13,6 +12,8 @@
 #include "OGLShader.h";
 #include "OGLWindow.h";
 #include "OGLMesh.h"
+
+#include "common.hpp"
 
 using namespace std;
 
@@ -86,5 +87,67 @@ struct LinkedStructure
 
 void problem2()
 {
+	window = new OGLWindow(window_w, window_h, APP_TITLE);
+	window->initialize();
 
+	camera_position = glm::vec3(5.0f, 5.0, 5.0f);
+	camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
+	camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+
+	//create shaders
+	vector<OGLShader> shaderList = createShaders();
+	
+
+	model = glm::mat4(1.0f);
+	projection = glm::perspective(zoom, (GLfloat)window->getBufferWidth() / window->getBufferHeight(), 0.1f, 100.0f);
+
+	// Set drawing for larger points and lines:
+	glPointSize(10.0f);
+	glLineWidth(3.0f);
+
+	// Set up the LinkedStructure:
+
+	// Main loop
+	while (!window->getShouldClose())
+	{
+		// Get & handle user input events
+		glfwPollEvents();
+
+		// Clear window 
+		glClearColor(0.1f, 0.2f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+		shaderList[0].useShader();
+
+		//render part
+
+		projection_loc = shaderList[0].getProjectionLoc();
+		model_loc = shaderList[0].getModelLoc();
+		view_loc = shaderList[0].getViewLoc();
+		color_loc = shaderList[0].getColorLoc();
+
+
+		view = glm::lookAt(camera_position, camera_target, camera_up);
+
+		color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+		glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniform4fv(color_loc, 1, glm::value_ptr(color));
+
+		// Draw the points:
+		
+
+		glUseProgram(0);
+
+		window->swapBuffers();
+
+	}
+
+	glfwTerminate();
+
+	return;
 }

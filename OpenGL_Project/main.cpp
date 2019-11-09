@@ -1,5 +1,6 @@
 
 #include "problem1.hpp"
+#include "problem2.hpp"
 #include <iostream>
 using namespace std;
 
@@ -21,7 +22,7 @@ int main()
 			break;
 		case 2:
 			cout << "Running Problem 2: Linked structure control." << endl << "Close the window to select another problem." << endl;
-			// problem2();
+			problem2();
 			break;
 		case 3:
 			cout << "Running Problem 1: Particle system." << endl << "Close the window to select another problem." << endl;

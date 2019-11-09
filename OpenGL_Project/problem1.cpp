@@ -14,39 +14,9 @@
 #include "OGLWindow.h";
 #include "OGLMesh.h"
 
+#include "common.hpp"
+
 using namespace std;
-
-const char* APP_TITLE = "COMP477 Fall 2019 Assignment 2";
-const int window_w = 800;
-const int window_h = 800;
-
-OGLWindow* window = nullptr;
-vector<OGLShader> shaderList;
-vector<OGLMesh*> meshList;
-
-
-static const char* vertex_shader_path = "vertex.shader";
-static const char* fragment_shader_path = "fragment.shader";
-
-static GLuint projection_loc = 0, model_loc = 0, view_loc, color_loc = 0;
-
-const glm::mat4 model_default = glm::mat4(1.0f);
-glm::mat4 model, view, projection;
-GLfloat zoom = 45;
-
-static glm::vec3 camera_position;// = glm::vec3(0, camHeight, 0);
-static glm::vec3 camera_target;// = glm::vec3(0, camHeight, -5);
-static glm::vec3 camera_up = glm::vec3(0, 1, 0);
-static glm::vec3 camera_direction = glm::normalize(camera_position - camera_target);
-
-glm::vec4 color = glm::vec4();
-
-void createShaders() {
-
-	OGLShader* shader = new OGLShader();
-	shader->createFromFileSrc(vertex_shader_path, fragment_shader_path);
-	shaderList.push_back(*shader);
-}
 
 int phase = 0;
 glm::vec3 animate_points(glm::vec3 cubePoint, glm::vec3 spherePoint, float currentPhaseTimeSpan, float timePerPhase)
@@ -161,7 +131,7 @@ void problem1()
 
 
 	//create shaders
-	createShaders();
+	vector<OGLShader> shaderList = createShaders();
 
 
 	model = glm::mat4(1.0f);
