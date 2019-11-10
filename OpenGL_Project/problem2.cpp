@@ -58,30 +58,58 @@ struct LinkedStructure
 	{
 		glm::mat<2, 2, GLfloat> JJT = jacobian * glm::transpose(jacobian);
 
-		glm::mat<2, 2, GLfloat> jacobianInverse = glm::inverse(JJT);
+		glm::mat<2, 2, GLfloat> jacobianInverse;
+		if (glm::determinant(JJT) != 0)
+			jacobianInverse = glm::inverse(JJT);
+		else
+			jacobianInverse = glm::mat<2, 2, GLfloat>(0); // If matrix has no determinant, our arm is fully stretched, so safe to assume no angles?
 
 		jacobianPseudoinverse = JJT * jacobianInverse;
 	}
 
+	glm::vec2 rotatePoint(glm::vec2 point, float angle)
+	{
+		float xPos = point.x * cos(angle) - point.y * sin(angle);
+		float yPos = point.y * cos(angle) - point.x * sin(angle);
+		return glm::vec2(xPos, yPos);
+	}
+
 	void incrementAngles(float deltaX, float deltaY)
 	{
+		calculateJacobian();
+		calculateJacobInverse();
+
 		glm::vec2 deltas = glm::vec2(deltaX, deltaY);
 		glm::vec3 angles = jacobianPseudoinverse * deltas;
 
 		// Add up angles:
 		alpha += angles.x;
-		beta += angles.x;
-		omega += angles.x;
+		beta += angles.y;
+		omega += angles.z;
 
 		// Get new joint positions from the change:
 		glm::vec2 offset1 = baseLoc + glm::vec2(A, 0);
-		joint1Pos = glm::vec2(offset1.x * cos(alpha) - offset1.y * sin(alpha), offset1.y * cos(alpha) - offset1.x * sin(alpha));
+		joint1Pos = rotatePoint(offset1, alpha);
 
-		glm::vec2 offset2 = baseLoc + joint1Pos + glm::vec2(B, 0);
-		joint2Pos = glm::vec2(offset2.x * cos(alpha + beta) - offset2.y * sin(alpha + beta), offset2.y * cos(alpha + beta) - offset2.x * sin(alpha + beta));
+		glm::vec2 offset2 = joint1Pos + glm::vec2(B, 0);
+		joint2Pos = rotatePoint(offset2, alpha + beta);
 
-		glm::vec2 offset3 = baseLoc + joint1Pos + joint2Pos + glm::vec2(C, 0);
-		joint2Pos = glm::vec2(offset3.x * cos(alpha + beta + omega) - offset3.y * sin(alpha + beta + omega), offset3.y * cos(alpha + beta + omega) - offset3.x * sin(alpha + beta + omega));
+		glm::vec2 offset3 = joint2Pos + glm::vec2(C, 0);
+		joint3Pos = rotatePoint(offset3, alpha + beta + omega);
+	}
+
+	// Function to ensure all the points are actually drawn at the correct distance:
+	void clampPointDistances()
+	{
+		// Get the unit vectors for the three joints:
+		glm::vec2 joint1UnitVec = (joint1Pos - baseLoc) / sqrt(pow(joint1Pos.x - baseLoc.x, 2) + pow(joint1Pos.y - baseLoc.y, 2));
+		glm::vec2 joint2UnitVec = (joint2Pos - joint1Pos) / sqrt(pow(joint2Pos.x - joint1Pos.x, 2) + pow(joint2Pos.y - joint1Pos.y, 2));
+		glm::vec2 joint3UnitVec = (joint3Pos - joint2Pos) / sqrt(pow(joint3Pos.x - joint2Pos.x, 2) + pow(joint3Pos.y - joint2Pos.y, 2));
+
+		// Get the new point positions:
+		joint1Pos = baseLoc + joint1UnitVec * A;
+		joint2Pos = joint1Pos + joint2UnitVec * B;
+		joint3Pos = joint2Pos + joint3UnitVec * C;
 	}
 };
 
@@ -90,7 +118,7 @@ void problem2()
 	window = new OGLWindow(window_w, window_h, APP_TITLE);
 	window->initialize();
 
-	camera_position = glm::vec3(5.0f, 5.0, 5.0f);
+	camera_position = glm::vec3(0.0f, 0.0, 20.0f);
 	camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
 	camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -107,7 +135,35 @@ void problem2()
 	glLineWidth(3.0f);
 
 	// Set up the LinkedStructure:
+	LinkedStructure arm;
+	arm.A = 2;
+	arm.B = 2;
+	arm.C = 2;
+	arm.alpha = 0.1f;
+	arm.beta = 0.1f;
+	arm.omega = 0.1f;
+	arm.baseLoc = glm::vec2(0.0f, 0.0f);
 
+	arm.incrementAngles(0, 0); // Doesn't really increment right now... only sets up rotations
+	// arm.incrementAngles(-1, -1);
+	arm.clampPointDistances();
+
+
+	// Check if all the joints are still the correct distance:
+	float Adist = (arm.joint1Pos - arm.baseLoc).length();
+	float Bdist = (arm.joint2Pos - arm.joint1Pos).length();
+	float Cdist = (arm.joint3Pos - arm.joint2Pos).length();
+
+	cout << arm.baseLoc.x << ", " << arm.baseLoc.y << endl;
+	cout << arm.joint1Pos.x << ", " << arm.joint1Pos.y << endl;
+	cout << arm.joint2Pos.x << ", " << arm.joint2Pos.y << endl;
+	cout << arm.joint3Pos.x << ", " << arm.joint3Pos.y << endl;
+
+	cout << arm.A << " = " << Adist << endl;
+	cout << arm.B << " = " << Bdist << endl;
+	cout << arm.C << " = " << Cdist << endl;
+
+	OGLMesh* pointMesh = new OGLMesh();
 	// Main loop
 	while (!window->getShouldClose())
 	{
@@ -139,7 +195,19 @@ void problem2()
 		glUniform4fv(color_loc, 1, glm::value_ptr(color));
 
 		// Draw the points:
-		
+		GLfloat points[] = {
+			arm.baseLoc.x, arm.baseLoc.y, 0,
+			arm.joint1Pos.x, arm.joint1Pos.y, 0,
+			arm.joint2Pos.x, arm.joint2Pos.y, 0,
+			arm.joint3Pos.x, arm.joint3Pos.y, 0,
+		};
+
+		pointMesh = new OGLMesh();
+		pointMesh->createMesh(points, 0, 12, 0);
+
+		pointMesh->drawPoints();
+		pointMesh->drawLines();
+		delete pointMesh;
 
 		glUseProgram(0);
 

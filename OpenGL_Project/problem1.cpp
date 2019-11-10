@@ -232,7 +232,7 @@ void problem1()
 		// meshList[0]->drawPoints();
 		cube->drawPoints();
 		
-
+		delete cube;
 		glUseProgram(0);
 
 		window->swapBuffers();
