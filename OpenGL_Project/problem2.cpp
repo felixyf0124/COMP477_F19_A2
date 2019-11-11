@@ -38,7 +38,7 @@ struct LinkedStructure
 	glm::vec2 joint3Pos;
 
 	// Calculated jacobian matrix:
-	glm::mat<2, 3, GLfloat> jacobian;
+	glm::mat<3, 2, GLfloat> jacobian;
 	glm::mat<2, 3, GLfloat> jacobianPseudoinverse;
 
 	// Calculates the jacobian matrix, and places the result in the LinkedStructure
@@ -46,17 +46,18 @@ struct LinkedStructure
 	{
 		// Deriv x / deriv alpha:
 		jacobian[0][0] = -A * sin(alpha) - B * sin(alpha + beta) - C * sin(alpha + beta + omega);
-		jacobian[0][1] = -B * sin(alpha + beta) - C * sin(alpha + beta + omega);
-		jacobian[0][2] = -C * sin(alpha + beta + omega);
-		jacobian[1][0] = A * cos(alpha) + B * cos(alpha + beta) + C * cos(alpha + beta + omega);
+		jacobian[1][0] = -B * sin(alpha + beta) - C * sin(alpha + beta + omega);
+		jacobian[2][0] = -C * sin(alpha + beta + omega);
+		jacobian[0][1] = A * cos(alpha) + B * cos(alpha + beta) + C * cos(alpha + beta + omega);
 		jacobian[1][1] = B * cos(alpha + beta) + C * cos(alpha + beta + omega);
-		jacobian[1][2] = C * cos(alpha + beta + omega);
+		jacobian[2][1] = C * cos(alpha + beta + omega);
 	}
 
 	// Calculates the jacobian matrix inverse, and places the result in the LinkedStructure
 	void calculateJacobInverse()
 	{
-		glm::mat<2, 2, GLfloat> JJT = jacobian * glm::transpose(jacobian);
+		glm::mat<2, 3, GLfloat> jacobianTranspose = glm::transpose(jacobian);
+		glm::mat<2, 2, GLfloat> JJT = jacobian * jacobianTranspose;
 
 		glm::mat<2, 2, GLfloat> jacobianInverse;
 		if (glm::determinant(JJT) != 0)
@@ -64,19 +65,20 @@ struct LinkedStructure
 		else
 			jacobianInverse = glm::mat<2, 2, GLfloat>(0); // If matrix has no determinant, our arm is fully stretched, so safe to assume no angles?
 
-		jacobianPseudoinverse = JJT * jacobianInverse;
+		jacobianPseudoinverse = jacobianTranspose * jacobianInverse;
 	}
 
-	glm::vec2 rotatePoint(glm::vec2 point, float angle)
+	glm::vec2 rotatePoint(glm::vec2 origin, glm::vec2 point, float angle)
 	{
 		float xPos = point.x * cos(angle) - point.y * sin(angle);
 		float yPos = point.y * cos(angle) - point.x * sin(angle);
-		return glm::vec2(xPos, yPos);
+		return glm::vec2(xPos + origin.x, yPos + origin.y);
 	}
 
 	void incrementAngles(float deltaX, float deltaY)
 	{
 		calculateJacobian();
+
 		calculateJacobInverse();
 
 		glm::vec2 deltas = glm::vec2(deltaX, deltaY);
@@ -88,28 +90,14 @@ struct LinkedStructure
 		omega += angles.z;
 
 		// Get new joint positions from the change:
-		glm::vec2 offset1 = baseLoc + glm::vec2(A, 0);
-		joint1Pos = rotatePoint(offset1, alpha);
+		glm::vec2 offset1 = glm::vec2(A, 0);
+		joint1Pos = rotatePoint(baseLoc, offset1, alpha);
 
-		glm::vec2 offset2 = joint1Pos + glm::vec2(B, 0);
-		joint2Pos = rotatePoint(offset2, alpha + beta);
+		glm::vec2 offset2 = glm::vec2(B, 0);
+		joint2Pos = rotatePoint(joint1Pos, offset2, alpha + beta);
 
-		glm::vec2 offset3 = joint2Pos + glm::vec2(C, 0);
-		joint3Pos = rotatePoint(offset3, alpha + beta + omega);
-	}
-
-	// Function to ensure all the points are actually drawn at the correct distance:
-	void clampPointDistances()
-	{
-		// Get the unit vectors for the three joints:
-		glm::vec2 joint1UnitVec = (joint1Pos - baseLoc) / sqrt(pow(joint1Pos.x - baseLoc.x, 2) + pow(joint1Pos.y - baseLoc.y, 2));
-		glm::vec2 joint2UnitVec = (joint2Pos - joint1Pos) / sqrt(pow(joint2Pos.x - joint1Pos.x, 2) + pow(joint2Pos.y - joint1Pos.y, 2));
-		glm::vec2 joint3UnitVec = (joint3Pos - joint2Pos) / sqrt(pow(joint3Pos.x - joint2Pos.x, 2) + pow(joint3Pos.y - joint2Pos.y, 2));
-
-		// Get the new point positions:
-		joint1Pos = baseLoc + joint1UnitVec * A;
-		joint2Pos = joint1Pos + joint2UnitVec * B;
-		joint3Pos = joint2Pos + joint3UnitVec * C;
+		glm::vec2 offset3 = glm::vec2(C, 0);
+		joint3Pos = rotatePoint(joint2Pos, offset3, alpha + beta + omega);
 	}
 };
 
@@ -144,9 +132,15 @@ void problem2()
 	arm.omega = 0.1f;
 	arm.baseLoc = glm::vec2(0.0f, 0.0f);
 
+	float deltaX = -1.0f;
+	float deltaY = -1.0f;
+
 	arm.incrementAngles(0, 0); // Doesn't really increment right now... only sets up rotations
-	// arm.incrementAngles(-1, -1);
-	arm.clampPointDistances();
+
+	cout << "Current tip location: " << arm.joint3Pos.x << ", " << arm.joint3Pos.y << endl;
+	cout << "Goal tip location: " << arm.joint3Pos.x + deltaX << ", " << arm.joint3Pos.y + deltaY << endl;
+
+	arm.incrementAngles(deltaX, deltaY);
 
 
 	// Check if all the joints are still the correct distance:
@@ -154,14 +148,14 @@ void problem2()
 	float Bdist = (arm.joint2Pos - arm.joint1Pos).length();
 	float Cdist = (arm.joint3Pos - arm.joint2Pos).length();
 
-	cout << arm.baseLoc.x << ", " << arm.baseLoc.y << endl;
-	cout << arm.joint1Pos.x << ", " << arm.joint1Pos.y << endl;
-	cout << arm.joint2Pos.x << ", " << arm.joint2Pos.y << endl;
-	cout << arm.joint3Pos.x << ", " << arm.joint3Pos.y << endl;
+	cout << "Base: " << arm.baseLoc.x << ", " << arm.baseLoc.y << endl;
+	cout << "Pt.1: " << arm.joint1Pos.x << ", " << arm.joint1Pos.y << endl;
+	cout << "Pt.2: " << arm.joint2Pos.x << ", " << arm.joint2Pos.y << endl;
+	cout << "Pt.3: " << arm.joint3Pos.x << ", " << arm.joint3Pos.y << endl << endl;
 
-	cout << arm.A << " = " << Adist << endl;
-	cout << arm.B << " = " << Bdist << endl;
-	cout << arm.C << " = " << Cdist << endl;
+	cout << "Length A: " << sqrt(pow(arm.joint1Pos.x - arm.baseLoc.x, 2) + pow(arm.joint1Pos.y - arm.baseLoc.y, 2)) << endl;
+	cout << "Length B: " << sqrt(pow(arm.joint2Pos.x - arm.joint1Pos.x, 2) + pow(arm.joint2Pos.y - arm.joint1Pos.y, 2)) << endl;
+	cout << "Length C: " << sqrt(pow(arm.joint3Pos.x - arm.joint2Pos.x, 2) + pow(arm.joint3Pos.y - arm.joint2Pos.y, 2)) << endl;
 
 	OGLMesh* pointMesh = new OGLMesh();
 	// Main loop
