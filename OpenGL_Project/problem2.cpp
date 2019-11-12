@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include"GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "glm\glm.hpp"
@@ -16,6 +19,11 @@
 #include "common.hpp"
 
 using namespace std;
+
+float degToRad(float deg)
+{
+	return deg * M_PI / 180;
+}
 
 struct LinkedStructure
 {
@@ -81,7 +89,7 @@ struct LinkedStructure
 
 		calculateJacobInverse();
 
-		glm::vec2 deltas = glm::vec2(deltaX, deltaY);
+		glm::vec2 deltas = glm::vec2(deltaX, -deltaY);
 		glm::vec3 angles = jacobianPseudoinverse * deltas;
 
 		// Add up angles:
@@ -100,6 +108,20 @@ struct LinkedStructure
 		joint3Pos = rotatePoint(joint2Pos, offset3, alpha + beta + omega);
 	}
 };
+
+
+glm::vec2 interpolation(glm::vec2 currentPoint, glm::vec2 destPoint, float currentPhaseTimeSpan, float timePerPhase)
+{
+	// Get the fraction of the current line traversed:
+	float timeFraction = currentPhaseTimeSpan / timePerPhase;
+	// Get location at given fraction of the way between current point and next point:
+	float x_diff = (destPoint.x - currentPoint.x) * timeFraction;
+	float y_diff = (destPoint.y - currentPoint.y) * timeFraction;
+
+	// Set position to new point:
+	glm::vec2 newPos = currentPoint + glm::vec2(x_diff, y_diff);
+	return newPos;
+}
 
 void problem2()
 {
@@ -132,15 +154,17 @@ void problem2()
 	arm.omega = 0.1f;
 	arm.baseLoc = glm::vec2(0.0f, 0.0f);
 
-	float deltaX = -1.0f;
-	float deltaY = -1.0f;
+	// float deltaX = 0.015f;
+	// float deltaY = -0.015f;
+
+	glm::vec2 goalPoint = glm::vec2(1.0f, -1.0f);
 
 	arm.incrementAngles(0, 0); // Doesn't really increment right now... only sets up rotations
 
 	cout << "Current tip location: " << arm.joint3Pos.x << ", " << arm.joint3Pos.y << endl;
-	cout << "Goal tip location: " << arm.joint3Pos.x + deltaX << ", " << arm.joint3Pos.y + deltaY << endl;
+	// cout << "Goal tip location: " << arm.joint3Pos.x + deltaX << ", " << arm.joint3Pos.y + deltaY << endl;
 
-	arm.incrementAngles(deltaX, deltaY);
+	// arm.incrementAngles(deltaX, deltaY);
 
 
 	// Check if all the joints are still the correct distance:
@@ -148,16 +172,21 @@ void problem2()
 	float Bdist = (arm.joint2Pos - arm.joint1Pos).length();
 	float Cdist = (arm.joint3Pos - arm.joint2Pos).length();
 
-	cout << "Base: " << arm.baseLoc.x << ", " << arm.baseLoc.y << endl;
-	cout << "Pt.1: " << arm.joint1Pos.x << ", " << arm.joint1Pos.y << endl;
-	cout << "Pt.2: " << arm.joint2Pos.x << ", " << arm.joint2Pos.y << endl;
-	cout << "Pt.3: " << arm.joint3Pos.x << ", " << arm.joint3Pos.y << endl << endl;
-
 	cout << "Length A: " << sqrt(pow(arm.joint1Pos.x - arm.baseLoc.x, 2) + pow(arm.joint1Pos.y - arm.baseLoc.y, 2)) << endl;
 	cout << "Length B: " << sqrt(pow(arm.joint2Pos.x - arm.joint1Pos.x, 2) + pow(arm.joint2Pos.y - arm.joint1Pos.y, 2)) << endl;
 	cout << "Length C: " << sqrt(pow(arm.joint3Pos.x - arm.joint2Pos.x, 2) + pow(arm.joint3Pos.y - arm.joint2Pos.y, 2)) << endl;
 
 	OGLMesh* pointMesh = new OGLMesh();
+
+	// Initialize time variables:
+	float startTime = glfwGetTime();
+	float currentTime;
+	float lastTime = glfwGetTime();
+	float deltaTime = 0;
+	float timeElapsed;
+
+	float timePerPhase = 10000.0f;
+
 	// Main loop
 	while (!window->getShouldClose())
 	{
@@ -188,6 +217,18 @@ void problem2()
 		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform4fv(color_loc, 1, glm::value_ptr(color));
 
+		// Apply the per-frame animation:
+		currentTime = glfwGetTime();
+		deltaTime = currentTime - lastTime;
+		lastTime = currentTime;
+		timeElapsed = currentTime - startTime;
+
+		// Get the delta:
+		glm::vec2 interpolatedPoint = interpolation(arm.joint3Pos, goalPoint, fmod(timeElapsed, timePerPhase), timePerPhase);
+		float deltaX = interpolatedPoint.x - arm.joint3Pos.x;
+		float deltaY = interpolatedPoint.y - arm.joint3Pos.y;
+		arm.incrementAngles(deltaX, deltaY);
+
 		// Draw the points:
 		GLfloat points[] = {
 			arm.baseLoc.x, arm.baseLoc.y, 0,
@@ -195,6 +236,7 @@ void problem2()
 			arm.joint2Pos.x, arm.joint2Pos.y, 0,
 			arm.joint3Pos.x, arm.joint3Pos.y, 0,
 		};
+
 
 		pointMesh = new OGLMesh();
 		pointMesh->createMesh(points, 0, 12, 0);
