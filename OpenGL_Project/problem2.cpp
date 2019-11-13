@@ -25,6 +25,18 @@ float degToRad(float deg)
 	return deg * M_PI / 180;
 }
 
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		double xPos, yPos;
+		glfwGetCursorPos(window, &xPos, &yPos);
+		cout << "Clicked at " << xPos << ", " << yPos << endl;
+
+		// TODO: Convert to world coords
+	}
+}
+
 struct LinkedStructure
 {
 	// The location of the base:
@@ -107,21 +119,39 @@ struct LinkedStructure
 		glm::vec2 offset3 = glm::vec2(C, 0);
 		joint3Pos = rotatePoint(joint2Pos, offset3, alpha + beta + omega);
 	}
+
+	glm::vec2 clampPoint(glm::vec2 point)
+	{
+		float structureRange = A + B + C; // radius of range circle;
+		if (glm::length(point - baseLoc) > structureRange)
+		{
+			glm::vec2 unitVec = (point - baseLoc)/ glm::length(point - baseLoc);
+			return unitVec * structureRange; // Furthest reachable point for the machine:
+		}
+		return point;
+	}
 };
 
 
 glm::vec2 interpolation(glm::vec2 currentPoint, glm::vec2 destPoint, float currentPhaseTimeSpan, float timePerPhase)
 {
-	// Get the fraction of the current line traversed:
-	float timeFraction = currentPhaseTimeSpan / timePerPhase;
-	// Get location at given fraction of the way between current point and next point:
-	float x_diff = (destPoint.x - currentPoint.x) * timeFraction;
-	float y_diff = (destPoint.y - currentPoint.y) * timeFraction;
+	if (currentPhaseTimeSpan > timePerPhase)
+		return destPoint;
+	else
+	{
+		// Get the fraction of the current line traversed:
+		float timeFraction = currentPhaseTimeSpan / timePerPhase;
+		// Get location at given fraction of the way between current point and next point:
+		float x_diff = (destPoint.x - currentPoint.x) * timeFraction;
+		float y_diff = (destPoint.y - currentPoint.y) * timeFraction;
 
-	// Set position to new point:
-	glm::vec2 newPos = currentPoint + glm::vec2(x_diff, y_diff);
-	return newPos;
+		// Set position to new point:
+		glm::vec2 newPos = currentPoint + glm::vec2(x_diff, y_diff);
+		return newPos;
+	}
 }
+
+float startTime;
 
 void problem2()
 {
@@ -132,7 +162,8 @@ void problem2()
 	camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
 	camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-
+	// Set mouse callback:
+	glfwSetMouseButtonCallback(window->getWindow(), mouse_button_callback);
 	//create shaders
 	vector<OGLShader> shaderList = createShaders();
 	
@@ -157,7 +188,7 @@ void problem2()
 	// float deltaX = 0.015f;
 	// float deltaY = -0.015f;
 
-	glm::vec2 goalPoint = glm::vec2(1.0f, -1.0f);
+	glm::vec2 goalPoint = arm.clampPoint(glm::vec2(-8.0f, 0.0f));
 
 	arm.incrementAngles(0, 0); // Doesn't really increment right now... only sets up rotations
 
@@ -179,13 +210,15 @@ void problem2()
 	OGLMesh* pointMesh = new OGLMesh();
 
 	// Initialize time variables:
-	float startTime = glfwGetTime();
+	startTime = glfwGetTime();
 	float currentTime;
 	float lastTime = glfwGetTime();
 	float deltaTime = 0;
 	float timeElapsed;
 
-	float timePerPhase = 10000.0f;
+	float timePerPhase = 5.0f;
+
+	glm::vec2 initialTipPos = arm.joint3Pos;
 
 	// Main loop
 	while (!window->getShouldClose())
@@ -224,7 +257,7 @@ void problem2()
 		timeElapsed = currentTime - startTime;
 
 		// Get the delta:
-		glm::vec2 interpolatedPoint = interpolation(arm.joint3Pos, goalPoint, fmod(timeElapsed, timePerPhase), timePerPhase);
+		glm::vec2 interpolatedPoint = interpolation(initialTipPos, goalPoint, timeElapsed, timePerPhase);
 		float deltaX = interpolatedPoint.x - arm.joint3Pos.x;
 		float deltaY = interpolatedPoint.y - arm.joint3Pos.y;
 		arm.incrementAngles(deltaX, deltaY);
