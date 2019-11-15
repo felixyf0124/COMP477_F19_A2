@@ -104,10 +104,10 @@ struct LinkedStructure
 	glm::vec2 clampPoint(glm::vec2 point)
 	{
 		float structureRange = A + B + C; // radius of range circle;
-		if (glm::length(point - baseLoc) > structureRange)
+		if (glm::length(point - baseLoc) >= structureRange)
 		{
 			glm::vec2 unitVec = (point - baseLoc)/ glm::length(point - baseLoc);
-			return unitVec * structureRange; // Furthest reachable point for the machine:
+			return unitVec * (structureRange - 0.001f); // Furthest reachable point for the machine:
 		}
 		return point;
 	}
@@ -272,6 +272,7 @@ void problem2()
 		float deltaX = interpolatedPoint.x - arm.joint3Pos.x;
 		float deltaY = interpolatedPoint.y - arm.joint3Pos.y;
 		arm.incrementAngles(deltaX, deltaY);
+		cout << arm.alpha << ", " << arm.beta << ", " << arm.omega << endl;
 
 		// Draw the points:
 		GLfloat points[] = {
