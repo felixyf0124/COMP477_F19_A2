@@ -1,20 +1,5 @@
-#include <iostream>
-#include <string>
-#include <vector>
-
 #define _USE_MATH_DEFINES
 #include <math.h>
-
-#include"GL/glew.h"
-#include "GLFW/glfw3.h"
-#include "glm\glm.hpp"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "glm/mat4x4.hpp"
-
-#include "OGLShader.h";
-#include "OGLWindow.h";
-#include "OGLMesh.h"
 
 #include "common.hpp"
 
@@ -27,6 +12,8 @@ float degToRad(float deg)
 
 float camera_z = 20.0f;
 glm::vec2 goalPoint(-8.0f, 0.0f);
+
+glm::vec2 initialTipPos;
 
 float startTime;
 float currentTime;
@@ -126,6 +113,8 @@ struct LinkedStructure
 	}
 };
 
+// Set up the LinkedStructure:
+LinkedStructure arm;
 
 glm::vec2 interpolation(glm::vec2 currentPoint, glm::vec2 destPoint, float currentPhaseTimeSpan, float timePerPhase)
 {
@@ -144,10 +133,6 @@ glm::vec2 interpolation(glm::vec2 currentPoint, glm::vec2 destPoint, float curre
 		return newPos;
 	}
 }
-
-// Set up the LinkedStructure:
-LinkedStructure arm;
-glm::vec2 initialTipPos;
 
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -242,9 +227,9 @@ void problem2()
 	float deltaTime = 0;
 	float timeElapsed;
 
-	float timePerPhase = 5.0f;
+	float timePerPhase = 2.0f;
 
-	glm::vec2 initialTipPos = arm.joint3Pos;
+	initialTipPos = arm.joint3Pos;
 
 	// Main loop
 	while (!window->getShouldClose())
