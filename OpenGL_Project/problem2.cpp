@@ -25,17 +25,11 @@ float degToRad(float deg)
 	return deg * M_PI / 180;
 }
 
-static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-{
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-	{
-		double xPos, yPos;
-		glfwGetCursorPos(window, &xPos, &yPos);
-		cout << "Clicked at " << xPos << ", " << yPos << endl;
+float camera_z = 20.0f;
+glm::vec2 goalPoint(-8.0f, 0.0f);
 
-		// TODO: Convert to world coords
-	}
-}
+float startTime;
+float currentTime;
 
 struct LinkedStructure
 {
@@ -151,7 +145,45 @@ glm::vec2 interpolation(glm::vec2 currentPoint, glm::vec2 destPoint, float curre
 	}
 }
 
-float startTime;
+// Set up the LinkedStructure:
+LinkedStructure arm;
+glm::vec2 initialTipPos;
+
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		// Sources used for code:
+		// http://antongerdelan.net/opengl/raycasting.html
+		// TODO: Cite sources for code! ;P
+
+		double xPos, yPos;
+		glfwGetCursorPos(window, &xPos, &yPos);
+		cout << "Clicked at " << xPos << ", " << yPos << endl;
+
+		// TODO: Convert to world coords
+		glm::mat4 resultMatrix = glm::inverse(projection);
+
+		float winZ = 1.0f;
+		float xVal = (2.0f * xPos) / window_w - 1.0f;
+		float yVal = 1.0f - (2.0f * yPos) / window_h;
+
+		glm::vec4 values(xVal, yVal, -1.0f, 1);
+
+		glm::vec4 ray_eye = values * resultMatrix;
+		ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0);
+
+		glm::vec3 result = glm::inverse(view) * ray_eye;
+		result = glm::normalize(result);
+		result *= camera_z;
+
+		cout << "Position is: " << result.x << ", " << result.y << endl;
+		cout << arm.joint3Pos.x << ", " << arm.joint3Pos.y << endl;
+		goalPoint = glm::vec2(result.x, result.y);
+		initialTipPos = arm.joint3Pos; // Update the start location of the interpolation
+		startTime = glfwGetTime(); // Update the start of the interpolation
+	}
+}
 
 void problem2()
 {
@@ -175,8 +207,7 @@ void problem2()
 	glPointSize(10.0f);
 	glLineWidth(3.0f);
 
-	// Set up the LinkedStructure:
-	LinkedStructure arm;
+	// Set up arm properties:
 	arm.A = 2;
 	arm.B = 2;
 	arm.C = 2;
@@ -188,14 +219,10 @@ void problem2()
 	// float deltaX = 0.015f;
 	// float deltaY = -0.015f;
 
-	glm::vec2 goalPoint = arm.clampPoint(glm::vec2(-8.0f, 0.0f));
-
 	arm.incrementAngles(0, 0); // Doesn't really increment right now... only sets up rotations
 
 	cout << "Current tip location: " << arm.joint3Pos.x << ", " << arm.joint3Pos.y << endl;
 	// cout << "Goal tip location: " << arm.joint3Pos.x + deltaX << ", " << arm.joint3Pos.y + deltaY << endl;
-
-	// arm.incrementAngles(deltaX, deltaY);
 
 
 	// Check if all the joints are still the correct distance:
@@ -211,7 +238,6 @@ void problem2()
 
 	// Initialize time variables:
 	startTime = glfwGetTime();
-	float currentTime;
 	float lastTime = glfwGetTime();
 	float deltaTime = 0;
 	float timeElapsed;
@@ -270,19 +296,36 @@ void problem2()
 			arm.joint3Pos.x, arm.joint3Pos.y, 0,
 		};
 
-
+		// Clamp goal point if needed:
+		goalPoint = arm.clampPoint(goalPoint);
+		GLfloat goal[] = {
+			goalPoint.x, goalPoint.y, 0
+		};
+		
+		// Draw machine points / lines:
 		pointMesh = new OGLMesh();
 		pointMesh->createMesh(points, 0, 12, 0);
 
 		pointMesh->drawPoints();
 		pointMesh->drawLines();
-		delete pointMesh;
+
+		pointMesh->clearMesh();
+
+		// Draw goal point:
+		color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+		glUniform4fv(color_loc, 1, glm::value_ptr(color));
+
+		pointMesh->createMesh(goal, 0, 3, 0);
+		pointMesh->drawPoints();
+
+		pointMesh->clearMesh();
 
 		glUseProgram(0);
 
 		window->swapBuffers();
 
 	}
+	delete pointMesh;
 
 	glfwTerminate();
 
