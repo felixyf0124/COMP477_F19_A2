@@ -113,12 +113,11 @@ OGLWindow::~OGLWindow()
 	glfwTerminate();
 }
 
-//void OGLWindow::keyCallback(GLFWwindow* window, int key, int code, int action, int mode)
-//{
-//	
-//	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-//	{
-//		glfwSetWindowShouldClose(window, GL_TRUE);
-//	}
-//
-//}
+// void OGLWindow::keyCallback(GLFWwindow* window, int key, int code, int action, int mode)
+// {
+// 	  cout << "Something was pushed!";
+// 	  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+// 	  {
+// 		  glfwSetWindowShouldClose(window, GL_TRUE);
+// 	  }
+// }

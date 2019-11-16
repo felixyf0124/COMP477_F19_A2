@@ -6,10 +6,8 @@ using namespace std;
 
 int main()
 {
-	problem2(); // TODO: Delete this
 	while (true)
 	{
-		break; // TODO: Delete this
 		cout << "Select which problem to run (1, 2, 3, 4)." << endl;
 		cout << "Write 0 to exit the program." << endl;
 
