@@ -1,0 +1,15 @@
+﻿  Building Custom Rule D:/devRepo/libfreenect2/examples/CMakeLists.txt
+  Protonect.cpp
+  viewer.cpp
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xutility(2372): warning C4996: 'std::copy::_Unchecked_iterators::_Deprecate': Call to 'std::copy' with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct. To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xutility(2372): note: see declaration of 'std::copy::_Unchecked_iterators::_Deprecate'
+  D:\devRepo\libfreenect2\examples\viewer.cpp(209): note: see reference to function template instantiation '_OutIt *std::copy<unsigned char*,unsigned char*>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=unsigned char *,
+              _InIt=unsigned char *
+          ]
+  flextGL.cpp
+  Generating Code...
+  Protonect.vcxproj -> D:\devRepo\libfreenect2\build\bin\Debug\Protonect.exe
+  Protonect.vcxproj -> D:/devRepo/libfreenect2/build/bin/Debug/Protonect.pdb (Full PDB)

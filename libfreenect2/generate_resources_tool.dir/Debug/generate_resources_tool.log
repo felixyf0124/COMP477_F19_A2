@@ -1,0 +1,4 @@
+﻿  Building Custom Rule D:/devRepo/libfreenect2/CMakeLists.txt
+  generate_resources.cpp
+  generate_resources_tool.vcxproj -> D:\devRepo\libfreenect2\build\bin\Debug\generate_resources_tool.exe
+  generate_resources_tool.vcxproj -> D:/devRepo/libfreenect2/build/bin/Debug/generate_resources_tool.pdb (Full PDB)

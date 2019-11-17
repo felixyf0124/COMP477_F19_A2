@@ -1,0 +1,7 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.16/Modules/FindOpenGL.cmake
+C:/Program Files/CMake/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.16/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-3.16/Modules/FindPkgConfig.cmake
+D:/devRepo/libfreenect2/cmake_modules/FindGLFW3.cmake
+D:/devRepo/libfreenect2/examples/CMakeLists.txt

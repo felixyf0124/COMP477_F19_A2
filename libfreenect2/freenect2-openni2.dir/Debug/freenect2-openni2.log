@@ -1,0 +1,24 @@
+﻿  Building Custom Rule D:/devRepo/libfreenect2/CMakeLists.txt
+  ColorStream.cpp
+  DepthStream.cpp
+  DeviceDriver.cpp
+  IrStream.cpp
+  Registration.cpp
+  Utility.cpp
+  VideoStream.cpp
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\algorithm(959): warning C4996: 'std::transform::_Unchecked_iterators::_Deprecate': Call to 'std::transform' with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct. To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\algorithm(959): note: see declaration of 'std::transform::_Unchecked_iterators::_Deprecate'
+  D:\devRepo\libfreenect2\src\openni2\VideoStream.cpp(99): note: see reference to function template instantiation '_OutIt *std::transform<std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const _Kty,_Ty>>>>,OniVideoMode*,ExtractKey>(_InIt,_InIt,_OutIt,_Fn1)' being compiled
+          with
+          [
+              _OutIt=OniVideoMode *,
+              _Kty=OniVideoMode,
+              _Ty=int,
+              _InIt=std::_Tree_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const OniVideoMode,int>>>>,
+              _Fn1=ExtractKey
+          ]
+  tinythread.cpp
+  Generating Code...
+     Creating library D:/devRepo/libfreenect2/build/lib/Debug/freenect2-openni2d.lib and object D:/devRepo/libfreenect2/build/lib/Debug/freenect2-openni2d.exp
+  freenect2-openni2.vcxproj -> D:\devRepo\libfreenect2\build\bin\Debug\freenect2-openni2d.dll
+  freenect2-openni2.vcxproj -> D:/devRepo/libfreenect2/build/bin/Debug/freenect2-openni2d.pdb (Full PDB)

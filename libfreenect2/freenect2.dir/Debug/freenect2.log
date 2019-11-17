@@ -1,0 +1,43 @@
+﻿  Generating resources.inc.h
+  Building Custom Rule D:/devRepo/libfreenect2/CMakeLists.txt
+  transfer_pool.cpp
+  event_loop.cpp
+  usb_control.cpp
+  allocator.cpp
+  frame_listener_impl.cpp
+  packet_pipeline.cpp
+  rgb_packet_stream_parser.cpp
+  rgb_packet_processor.cpp
+  depth_packet_stream_parser.cpp
+  depth_packet_processor.cpp
+  cpu_depth_packet_processor.cpp
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xutility(2372): warning C4996: 'std::copy::_Unchecked_iterators::_Deprecate': Call to 'std::copy' with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct. To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xutility(2372): note: see declaration of 'std::copy::_Unchecked_iterators::_Deprecate'
+  D:\devRepo\libfreenect2\src\cpu_depth_packet_processor.cpp(864): note: see reference to function template instantiation '_OutIt std::copy<const float*,ScalarT*>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=float *,
+              ScalarT=float,
+              _InIt=const float *
+          ]
+  resource.cpp
+  command_transaction.cpp
+  registration.cpp
+  logging.cpp
+  libfreenect2.cpp
+  tinythread.cpp
+  turbo_jpeg_rgb_packet_processor.cpp
+  flextGL.cpp
+  opengl_depth_packet_processor.cpp
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xutility(2372): warning C4996: 'std::copy::_Unchecked_iterators::_Deprecate': Call to 'std::copy' with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct. To disable this warning, use -D_SCL_SECURE_NO_WARNINGS. See documentation on how to use Visual C++ 'Checked Iterators'
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\xutility(2372): note: see declaration of 'std::copy::_Unchecked_iterators::_Deprecate'
+  D:\devRepo\libfreenect2\src\opengl_depth_packet_processor.cpp(918): note: see reference to function template instantiation '_OutIt *std::copy<unsigned char*,unsigned char*>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=unsigned char *,
+              _InIt=unsigned char *
+          ]
+  Generating Code...
+     Creating library D:/devRepo/libfreenect2/build/lib/Debug/freenect2d.lib and object D:/devRepo/libfreenect2/build/lib/Debug/freenect2d.exp
+  freenect2.vcxproj -> D:\devRepo\libfreenect2\build\bin\Debug\freenect2d.dll
+  freenect2.vcxproj -> D:/devRepo/libfreenect2/build/bin/Debug/freenect2d.pdb (Full PDB)

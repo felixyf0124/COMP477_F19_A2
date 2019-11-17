@@ -1,0 +1,11 @@
+D:/devRepo/libfreenect2/build/CMakeFiles/generate_resources_tool.dir
+D:/devRepo/libfreenect2/build/CMakeFiles/freenect2.dir
+D:/devRepo/libfreenect2/build/CMakeFiles/freenect2-openni2.dir
+D:/devRepo/libfreenect2/build/CMakeFiles/INSTALL.dir
+D:/devRepo/libfreenect2/build/CMakeFiles/install-openni2.dir
+D:/devRepo/libfreenect2/build/CMakeFiles/ALL_BUILD.dir
+D:/devRepo/libfreenect2/build/CMakeFiles/ZERO_CHECK.dir
+D:/devRepo/libfreenect2/build/doc/CMakeFiles/INSTALL.dir
+D:/devRepo/libfreenect2/build/examples/CMakeFiles/Protonect.dir
+D:/devRepo/libfreenect2/build/examples/CMakeFiles/INSTALL.dir
+D:/devRepo/libfreenect2/build/examples/CMakeFiles/ALL_BUILD.dir
