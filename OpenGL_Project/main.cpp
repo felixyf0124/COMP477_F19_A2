@@ -9,10 +9,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/mat4x4.hpp"
+#include "NiTE\NiTE.h"
+#include "NiTE\NiteCAPI.h"
 
 #include "OGLShader.h";
 #include "OGLWindow.h";
 #include "OGLMesh.h"
+
 
 using namespace std;
 
@@ -40,6 +43,16 @@ static glm::vec3 camera_up = glm::vec3(0, 1, 0);
 static glm::vec3 camera_direction = glm::normalize(camera_position - camera_target);
 
 glm::vec4 color = glm::vec4();
+
+//Prob 4 
+nite::UserTracker userTracker;
+nite::Status niteRc;
+nite::UserTrackerFrameRef userTrackerFrame;
+
+
+void niteInit() {
+	niteRc = userTracker.create();
+}
 
 void createShaders() {
 
@@ -100,7 +113,7 @@ int main()
 	model = glm::mat4(1.0f);
 	projection = glm::perspective(zoom, (GLfloat)window->getBufferWidth() / window->getBufferHeight(), 0.1f, 100.0f);
 
-
+	niteInit();
 
 	// Main loop
 	while (!window->getShouldClose())
@@ -116,6 +129,8 @@ int main()
 		glClearColor(0.1f, 0.2f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+		
 
 		shaderList[0].useShader();
 
