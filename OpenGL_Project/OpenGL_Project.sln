@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL_Project", "OpenGL_Project.vcxproj", "{D71145A4-4EDF-42DA-A5FD-042A16F32C3B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UserViewer", "..\UserViewer\UserViewer.vcxproj", "{AC86F72F-6E9C-4DA1-8245-5E9226C2DE2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{D71145A4-4EDF-42DA-A5FD-042A16F32C3B}.Release|x64.Build.0 = Release|x64
 		{D71145A4-4EDF-42DA-A5FD-042A16F32C3B}.Release|x86.ActiveCfg = Release|Win32
 		{D71145A4-4EDF-42DA-A5FD-042A16F32C3B}.Release|x86.Build.0 = Release|Win32
+		{AC86F72F-6E9C-4DA1-8245-5E9226C2DE2D}.Debug|x64.ActiveCfg = Debug|x64
+		{AC86F72F-6E9C-4DA1-8245-5E9226C2DE2D}.Debug|x64.Build.0 = Debug|x64
+		{AC86F72F-6E9C-4DA1-8245-5E9226C2DE2D}.Debug|x86.ActiveCfg = Debug|Win32
+		{AC86F72F-6E9C-4DA1-8245-5E9226C2DE2D}.Debug|x86.Build.0 = Debug|Win32
+		{AC86F72F-6E9C-4DA1-8245-5E9226C2DE2D}.Release|x64.ActiveCfg = Release|x64
+		{AC86F72F-6E9C-4DA1-8245-5E9226C2DE2D}.Release|x64.Build.0 = Release|x64
+		{AC86F72F-6E9C-4DA1-8245-5E9226C2DE2D}.Release|x86.ActiveCfg = Release|Win32
+		{AC86F72F-6E9C-4DA1-8245-5E9226C2DE2D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
