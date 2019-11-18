@@ -51,6 +51,7 @@ nite::UserTrackerFrameRef userTrackerFrame;
 
 
 void niteInit() {
+	niteRc = nite::NiTE::initialize();
 	niteRc = userTracker.create();
 }
 
@@ -130,7 +131,31 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		
+		niteRc = userTracker.readFrame(&userTrackerFrame);
+
+		const nite::Array<nite::UserData>& users = userTrackerFrame.getUsers();
+
+		for (int i = 0; i < users.getSize(); ++i)
+		{
+			const nite::UserData& user = users[i];
+			userTracker.startSkeletonTracking(user.getId());
+
+			if (user.getSkeleton().getState() == nite::SKELETON_TRACKED)
+			{
+				const nite::SkeletonJoint& head =
+					user.getSkeleton().getJoint(nite::JOINT_HEAD);
+				if (head.getPositionConfidence() > 0.5)
+				{
+					printf("%d. (%5.2f, %5.2f, %5.2f)\n", user.getId(),
+						head.getPosition().x,
+						head.getPosition().y,
+						head.getPosition().z
+						);
+				}
+			}
+		}
+
+
 
 		shaderList[0].useShader();
 
