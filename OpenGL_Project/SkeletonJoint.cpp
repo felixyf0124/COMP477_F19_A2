@@ -1,6 +1,6 @@
 #include "SkeletonJoint.h"
 
-SkeletonJoint::SkeletonJoint(int id = -1)
+SkeletonJoint::SkeletonJoint(int id)
 {
 	this->setId(id);
 	this->parent = nullptr;
@@ -14,6 +14,16 @@ void SkeletonJoint::setId(int id)
 	this->id = id;
 }
 
+void SkeletonJoint::setPosition(glm::vec3 position)
+{
+	this->position = position;
+}
+
+void SkeletonJoint::setOffsetPosition(glm::vec3 offsetPosition)
+{
+	this->offsetPosition = offsetPosition;
+}
+
 void SkeletonJoint::setParent(SkeletonJoint* const parent)
 {
 	this->parent = parent;
@@ -24,17 +34,25 @@ void SkeletonJoint::setParent(SkeletonJoint* const parent)
 	if it is not linked with the current joint
 */
 void SkeletonJoint::addChild(SkeletonJoint* const child)
-{
-	this->children->push_back(child);
-	if (child->getParent() != this)
+{	
+	if (this != nullptr)
 	{
-		child->setParent(this);
+		this->children->push_back(child);
+		if (child->getParent() != this)
+		{
+			child->setParent(this);
+		}
 	}
 }
 
 int SkeletonJoint::getId()
 {
 	return this->id;
+}
+
+glm::vec3 SkeletonJoint::getPosition()
+{
+	return this->position;
 }
 
 SkeletonJoint* const SkeletonJoint::getParent()
@@ -68,17 +86,111 @@ vector<SkeletonJoint*>* const SkeletonJoint::getChildren()
 SkeletonJoint* const SkeletonJoint::getOffspringById(int id)
 {
 	SkeletonJoint* _offspring = nullptr;
-	_offspring = this->getChildAtId(id);
-	if (_offspring == nullptr)
+	if (this->children->size() > 0)
 	{
-		for (unsigned int i = 0; i < this->children->size(); ++i)
+		_offspring = this->getChildAtId(id);
+		if (_offspring == nullptr)
 		{
-			_offspring = this->children->at(i)->getOffspringById(id);
-			if (_offspring != nullptr)
+			for (unsigned int i = 0; i < this->children->size(); ++i)
 			{
-				return _offspring;
+				_offspring = this->children->at(i)->getOffspringById(id);
+				if (_offspring != nullptr)
+				{
+					return _offspring;
+				}
+			}
+		}
+		else
+		{
+			return _offspring;
+		}
+	}
+	return nullptr;
+}
+
+vector<glm::vec3>* SkeletonJoint::getAllJoints()
+{
+	vector<glm::vec3>* _skeleton = new vector<glm::vec3>();
+	if (this->id == 0)
+	{
+		_skeleton->push_back(this->position);
+		while(true)
+		{
+			SkeletonJoint* _next = this->getOffspringById(_skeleton->size());
+			if (_next != nullptr)
+			{
+				cout << _skeleton->size() << "joints\n";
+				_skeleton->push_back(_next->getPosition());
+			}
+			else
+			{
+				cout << "total " << _skeleton->size() << " joints\n";
+
+				return _skeleton;
 			}
 		}
 	}
-	return _offspring;
+	else
+	{
+		SkeletonJoint* _root = this->getRootJoint();
+		
+		return _root->getAllJoints();
+	}
+}
+
+vector<int>* SkeletonJoint::getSkeletonIndices()
+{
+	vector<glm::vec3>* _skeleton = this->getAllJoints();
+	SkeletonJoint* _root = this->getRootJoint();
+	vector<int>* _indices = new vector<int>();
+	for (GLuint i = 0; i < _skeleton->size()-1; ++i)
+	{
+		SkeletonJoint* _joint = _root->getOffspringById(i + 1);
+		if (_joint != nullptr)
+		{
+			_indices->push_back(_joint->getParent()->getId());
+			_indices->push_back(_joint->getId());
+			_joint = nullptr;
+		}
+		else 
+		{
+			_joint = nullptr;
+			return _indices;
+		}
+	}
+	return nullptr;
+}
+
+SkeletonJoint* const SkeletonJoint::getRootJoint()
+{
+	
+	if (this->getId() == 0)
+	{
+		return this;
+	}
+	else if (this->getParent()->getId() != -1)
+	{
+		return this->getParent()->getRootJoint();
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+/*
+	this is for debugging only
+*/
+void SkeletonJoint::printAll()
+{
+	cout << this->id << " -> (";
+	for (GLuint i = 0; i < this->children->size(); ++i)
+	{
+		if (i > 0)
+		{
+			cout << " | ";
+		}
+		this->children->at(i)->printAll();
+	}
+	cout << ")";
 }

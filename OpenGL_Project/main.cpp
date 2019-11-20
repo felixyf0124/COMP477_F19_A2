@@ -13,6 +13,9 @@
 #include "OGLShader.h";
 #include "OGLWindow.h";
 #include "OGLMesh.h"
+#include "OGLLine.h"
+
+#include "RawDataLoader.h"
 
 using namespace std;
 
@@ -92,6 +95,17 @@ int main()
 	cube->createMesh(sample_vertices, sample_indices, vertics_size, indices_size);
 	meshList.push_back(cube);
 	
+	printf("here 98 main\n");
+	RawDataLoader* dataLoader = new RawDataLoader();
+	vector<SkeletonJoint*>* _raw_data = dataLoader->loadRawData("raw_data_1");
+	vector<OGLLine*>* ske_anima = new vector<OGLLine*>();
+	for (GLuint i = 0; i < _raw_data->size(); ++i)
+	{
+		//_raw_data->at(i)->printAll();
+		OGLLine* _line = new OGLLine();
+		_line->setPoints(_raw_data->at(i)->getAllJoints());
+		ske_anima->push_back(_line);
+	}
 
 	//create shaders
 	createShaders();
@@ -135,8 +149,9 @@ int main()
 		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform4fv(color_loc, 1, glm::value_ptr(color));
-
-		meshList[0]->drawMesh();
+		
+		ske_anima->at(0)->drawPoints();
+		//meshList[0]->drawMesh();
 
 		glUseProgram(0);
 

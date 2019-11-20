@@ -161,6 +161,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="objloader.cpp" />
+    <ClCompile Include="OGLLine.cpp" />
     <ClCompile Include="OGLMesh.cpp" />
     <ClCompile Include="OGLObject.cpp" />
     <ClCompile Include="OGLShader.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="objloader.hpp" />
+    <ClInclude Include="OGLLine.h" />
     <ClInclude Include="OGLMesh.h" />
     <ClInclude Include="OGLObject.h" />
     <ClInclude Include="OGLShader.h" />

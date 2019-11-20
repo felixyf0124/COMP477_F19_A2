@@ -1,7 +1,6 @@
 #include "OGLObject.h"
 
 //try not include in header to avoid include loop
-#include "BoxCollider.h"
 
 OGLObject::OGLObject():
 	model(glm::mat4(1.0f)), 
