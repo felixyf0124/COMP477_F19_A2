@@ -21,6 +21,14 @@
 
 #include <NiteSampleUtilities.h>
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <ctime>
+#include <vector>
+
+#include "glm.hpp"
+
 #define GL_WIN_SIZE_X	1280
 #define GL_WIN_SIZE_Y	1024
 #define TEXTURE_SIZE	512
@@ -39,6 +47,9 @@ bool g_drawBoundingBox = false;
 bool g_drawBackground = true;
 bool g_drawDepth = true;
 bool g_drawFrameId = false;
+
+bool r_startRecord = false;
+std::vector<std::string>* r_rawData = new std::vector<std::string>();
 
 int g_nXRes = 0, g_nYRes = 0;
 
@@ -490,7 +501,194 @@ void SampleViewer::Display()
 			if (users[i].getSkeleton().getState() == nite::SKELETON_TRACKED && g_drawSkeleton)
 			{
 				DrawSkeleton(m_pUserTracker, user);
+
+				r_startRecord = true;
+				std::string _frame_data = "at\n";
+				nite::Skeleton _dunp_data = user.getSkeleton();
+				nite::SkeletonJoint _head = _dunp_data.getJoint(nite::JOINT_HEAD);
+				nite::SkeletonJoint _neck = _dunp_data.getJoint(nite::JOINT_NECK);
+				nite::SkeletonJoint _L_shoulder = _dunp_data.getJoint(nite::JOINT_LEFT_SHOULDER);
+				nite::SkeletonJoint _R_shoulder = _dunp_data.getJoint(nite::JOINT_RIGHT_SHOULDER);
+				nite::SkeletonJoint _torso = _dunp_data.getJoint(nite::JOINT_TORSO);
+				nite::SkeletonJoint _L_elbow = _dunp_data.getJoint(nite::JOINT_LEFT_ELBOW);
+				nite::SkeletonJoint _R_elbow = _dunp_data.getJoint(nite::JOINT_RIGHT_ELBOW);
+				nite::SkeletonJoint _L_hip = _dunp_data.getJoint(nite::JOINT_LEFT_HIP);
+				nite::SkeletonJoint _R_hip = _dunp_data.getJoint(nite::JOINT_RIGHT_HIP);
+				nite::SkeletonJoint _L_hand = _dunp_data.getJoint(nite::JOINT_LEFT_HAND);
+				nite::SkeletonJoint _R_hand = _dunp_data.getJoint(nite::JOINT_RIGHT_HAND);
+				nite::SkeletonJoint _L_knee= _dunp_data.getJoint(nite::JOINT_LEFT_KNEE);
+				nite::SkeletonJoint _R_knee = _dunp_data.getJoint(nite::JOINT_RIGHT_KNEE);
+				nite::SkeletonJoint _L_foot = _dunp_data.getJoint(nite::JOINT_LEFT_FOOT);
+				nite::SkeletonJoint _R_foot = _dunp_data.getJoint(nite::JOINT_RIGHT_FOOT);
+
+
+				//if (_head.getPositionConfidence() == 1
+				//	&& _neck.getPositionConfidence() == 1
+				//	&& _L_shoulder.getPositionConfidence() == 1
+				//	&& _R_shoulder.getPositionConfidence() == 1
+				//	&& _torso.getPositionConfidence() == 1
+				//	&& _L_elbow.getPositionConfidence() == 1
+				//	&& _R_elbow.getPositionConfidence() == 1
+				//	&& _L_hip.getPositionConfidence() == 1
+				//	&& _R_hip.getPositionConfidence() == 1
+				//	&& _L_hand.getPositionConfidence() == 1
+				//	&& _R_hand.getPositionConfidence() == 1
+				//	&& _L_knee.getPositionConfidence() == 1
+				//	&& _R_knee.getPositionConfidence() == 1
+				//	&& _L_foot.getPositionConfidence() == 1
+				//	&& _R_foot.getPositionConfidence() == 1
+				//	)
+				if (_head.getPositionConfidence() > 0.5
+					&& _neck.getPositionConfidence() > 0.5
+					&& _L_shoulder.getPositionConfidence() > 0.5
+					&& _R_shoulder.getPositionConfidence() > 0.5
+					&& _torso.getPositionConfidence() > 0.5
+					&& _L_elbow.getPositionConfidence() > 0.5
+					&& _R_elbow.getPositionConfidence() > 0.5
+					&& _L_hip.getPositionConfidence() > 0.5
+					&& _R_hip.getPositionConfidence() > 0.5
+					&& _L_hand.getPositionConfidence() > 0.5
+					&& _R_hand.getPositionConfidence() > 0.5
+					&& _L_knee.getPositionConfidence() > 0.5
+					&& _R_knee.getPositionConfidence() > 0.5
+					&& _L_foot.getPositionConfidence() > 0.5
+					&& _R_foot.getPositionConfidence() > 0.5
+					)
+
+				{
+
+					//head
+					_frame_data += "0 "
+						+ std::to_string(_head.getPosition().x) + " "
+						+ std::to_string(_head.getPosition().y) + " "
+						+ std::to_string(_head.getPosition().z) + " "
+						+ "-1\n";
+
+					//neck
+					_frame_data += "1 "
+						+ std::to_string(_neck.getPosition().x) + " "
+						+ std::to_string(_neck.getPosition().y) + " "
+						+ std::to_string(_neck.getPosition().z) + " "
+						+ "0\n";
+
+					//left shoulder
+					_frame_data += "2 "
+						+ std::to_string(_L_shoulder.getPosition().x) + " "
+						+ std::to_string(_L_shoulder.getPosition().y) + " "
+						+ std::to_string(_L_shoulder.getPosition().z) + " "
+						+ "1\n";
+
+					//right shoulder
+					_frame_data += "3 "
+						+ std::to_string(_R_shoulder.getPosition().x) + " "
+						+ std::to_string(_R_shoulder.getPosition().y) + " "
+						+ std::to_string(_R_shoulder.getPosition().z) + " "
+						+ "1\n";
+
+					//torso
+					_frame_data += "4 "
+						+ std::to_string(_torso.getPosition().x) + " "
+						+ std::to_string(_torso.getPosition().y) + " "
+						+ std::to_string(_torso.getPosition().z) + " "
+						+ "1\n";
+
+					//left elbow
+					_frame_data += "5 "
+						+ std::to_string(_L_elbow.getPosition().x) + " "
+						+ std::to_string(_L_elbow.getPosition().y) + " "
+						+ std::to_string(_L_elbow.getPosition().z) + " "
+						+ "2\n";
+
+					//right elbow
+					_frame_data += "6 "
+						+ std::to_string(_R_elbow.getPosition().x) + " "
+						+ std::to_string(_R_elbow.getPosition().y) + " "
+						+ std::to_string(_R_elbow.getPosition().z) + " "
+						+ "3\n";
+
+					//left hip
+					_frame_data += "7 "
+						+ std::to_string(_L_hip.getPosition().x) + " "
+						+ std::to_string(_L_hip.getPosition().y) + " "
+						+ std::to_string(_L_hip.getPosition().z) + " "
+						+ "4\n";
+
+					//right hip
+					_frame_data += "8 "
+						+ std::to_string(_R_hip.getPosition().x) + " "
+						+ std::to_string(_R_hip.getPosition().y) + " "
+						+ std::to_string(_R_hip.getPosition().z) + " "
+						+ "4\n";
+
+					//left hand
+					_frame_data += "9 "
+						+ std::to_string(_L_hand.getPosition().x) + " "
+						+ std::to_string(_L_hand.getPosition().y) + " "
+						+ std::to_string(_L_hand.getPosition().z) + " "
+						+ "5\n";
+
+					//right hand
+					_frame_data += "10 "
+						+ std::to_string(_R_hand.getPosition().x) + " "
+						+ std::to_string(_R_hand.getPosition().y) + " "
+						+ std::to_string(_R_hand.getPosition().z) + " "
+						+ "6\n";
+
+					//left knee
+					_frame_data += "11 "
+						+ std::to_string(_L_knee.getPosition().x) + " "
+						+ std::to_string(_L_knee.getPosition().y) + " "
+						+ std::to_string(_L_knee.getPosition().z) + " "
+						+ "7\n";
+
+					//right knee
+					_frame_data += "12 "
+						+ std::to_string(_R_knee.getPosition().x) + " "
+						+ std::to_string(_R_knee.getPosition().y) + " "
+						+ std::to_string(_R_knee.getPosition().z) + " "
+						+ "8\n";
+
+					//left foot
+					_frame_data += "13 "
+						+ std::to_string(_L_foot.getPosition().x) + " "
+						+ std::to_string(_L_foot.getPosition().y) + " "
+						+ std::to_string(_L_foot.getPosition().z) + " "
+						+ "11\n";
+
+					//right foot
+					_frame_data += "14 "
+						+ std::to_string(_R_foot.getPosition().x) + " "
+						+ std::to_string(_R_foot.getPosition().y) + " "
+						+ std::to_string(_R_foot.getPosition().z) + " "
+						+ "12\n";
+
+					r_rawData->push_back(_frame_data);
+				}
 			}
+			
+		}
+		else if (r_startRecord == true && !user.isVisible())
+		{
+			// to do save rawrecord
+			// get current data & time so we can name our files based on these
+			std::time_t _t_now = time(0);
+			 char* dt = ctime(&_t_now);
+			const std::string _fileName = "raw_data_" + std::to_string(user.getId());
+			
+
+			std::ofstream _file;
+
+			_file.open(_fileName);
+			for (unsigned int i = 0; i < r_rawData->size(); ++i)
+			{
+				_file << r_rawData->at(i);
+			}
+			_file << "end \n";
+			_file << dt;
+			_file.close();
+			r_rawData = new std::vector<std::string>();
+			r_startRecord = false;
+
 		}
 
 		if (m_poseUser == 0 || m_poseUser == user.getId())
