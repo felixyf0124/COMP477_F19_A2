@@ -37,6 +37,7 @@ public:
 	SkeletonJoint* const getRootJoint();
 
 	void cookQuaternion();
+	void cookAllQuaternion();
 
 	void printAll();
 

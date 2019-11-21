@@ -179,11 +179,26 @@ SkeletonJoint* const SkeletonJoint::getRootJoint()
 
 void SkeletonJoint::cookQuaternion()
 {
-	if (this->id != 0) {
+	if (this->id != 0 && this->getChildren()->size() == 1) {
 		glm::vec3 A = this->getParent()->getPosition();
 		glm::vec3 B = this->getPosition();
-		//glm::vec3 C = 
-		//this->quatLocal = special::quatFromTwoVec(_parent,)
+		glm::vec3 C = this->getChildren()->at(0)->getPosition();
+		this->quatLocal = special::quatFromTwoVec(B - A, C - B);
+	}
+}
+
+/*
+	this only functioning when this is the root joint
+*/
+void SkeletonJoint::cookAllQuaternion()
+{
+	if (this->id == 0)
+	{
+		for (GLuint i = 1; i < this->getAllJoints()->size(); ++i)
+		{
+			SkeletonJoint* _joint = this->getOffspringById(i);
+			_joint->cookQuaternion();
+		}
 	}
 }
 
