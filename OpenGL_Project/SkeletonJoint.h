@@ -3,6 +3,8 @@
 #include <vector>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm\gtx\quaternion.hpp>
+#include "Constants.h"
 
 using namespace std;
 
@@ -30,9 +32,11 @@ public:
 
 	vector<glm::vec3>* getAllJoints();
 
-	vector<int>* getSkeletonIndices();
+	vector<GLuint>* getSkeletonIndices();
 
 	SkeletonJoint* const getRootJoint();
+
+	void cookQuaternion();
 
 	void printAll();
 
@@ -42,5 +46,8 @@ private:
 	vector<SkeletonJoint*>* children;
 	glm::vec3 position;
 	glm::vec3 offsetPosition;
+
+	glm::quat quatLocal;
+	glm::quat quatOffset;
 };
 

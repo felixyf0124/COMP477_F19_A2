@@ -29,6 +29,19 @@ void OGLLine::setPoints(vector<glm::vec3>* points)
 	setUp();
 }
 
+void OGLLine::setPoints(vector<glm::vec3>* points, vector<GLuint>* indices)
+{
+	this->points = *points;
+	this->indices = *indices;
+	setUp();
+}
+
+void OGLLine::setIndices(vector<GLuint>* indices)
+{
+	this->indices = *indices;
+	setUp();
+}
+
 void OGLLine::setColor(glm::vec4 color)
 {
 	setLineColor(color);
@@ -172,7 +185,7 @@ void OGLLine::drawLines()
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-	glDrawElements(GL_LINE_STRIP, indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
 
 	glLineWidth(2.0f);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

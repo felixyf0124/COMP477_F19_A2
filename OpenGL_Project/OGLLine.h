@@ -23,6 +23,8 @@ public:
 	OGLLine();
 	OGLLine(vector<glm::vec3>* points);
 	void setPoints(vector<glm::vec3>* points);
+	void setPoints(vector<glm::vec3>* points, vector<GLuint>* indices);
+	void setIndices(vector<GLuint>* indices);
 	void setColor(glm::vec4 color);
 	void setLineColor(glm::vec4 line_color);
 	void setPointColor(glm::vec4 point_color);

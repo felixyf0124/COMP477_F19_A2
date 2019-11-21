@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/mat4x4.hpp"
+#include "glm\gtx\quaternion.hpp"
 
 #include "OGLShader.h";
 #include "OGLWindow.h";
@@ -20,13 +21,14 @@
 using namespace std;
 
 const char* APP_TITLE = "COMP477 Fall 2019 Assignment 2";
-const int window_w = 800;
-const int window_h = 800;
+const int window_w = 1000;
+const int window_h = 1000;
 
 OGLWindow* window = nullptr;
 vector<OGLShader> shaderList;
 vector<OGLMesh*> meshList;
 
+int question_number = 4;
 
 static const char* vertex_shader_path = "vertex.shader";
 static const char* fragment_shader_path = "fragment.shader";
@@ -37,12 +39,23 @@ const glm::mat4 model_default = glm::mat4(1.0f);
 glm::mat4 model, view, projection;
 GLfloat zoom = 45;
 
+vector<int>* atFrame = new vector<int>();
+
 static glm::vec3 camera_position;// = glm::vec3(0, camHeight, 0);
 static glm::vec3 camera_target;// = glm::vec3(0, camHeight, -5);
 static glm::vec3 camera_up = glm::vec3(0, 1, 0);
 static glm::vec3 camera_direction = glm::normalize(camera_position - camera_target);
 
+const glm::mat4 turn_left_mat = glm::rotate(model_default, glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+const glm::mat4 turn_right_mat = glm::rotate(model_default, glm::radians(-1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+bool isLeftKeyDown = false, isRightKeyDown = false;
+
 glm::vec4 color = glm::vec4();
+
+
+void keyCallback(GLFWwindow* window, int key, int code, int action, int mode);
+
 
 void createShaders() {
 
@@ -57,13 +70,15 @@ int main()
 	window = new OGLWindow(window_w, window_h, APP_TITLE);
 	window->initialize();
 
-	camera_position = glm::vec3(5.0f, 5.0f, 1.0f);
+	glfwSetKeyCallback(window->getWindow(), keyCallback);
+
+	camera_position = glm::vec3(5.0f, 1.0f, 1.0f);
 	camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
 	camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	//glfwSetKeyCallback(window->getWindow(), keyCallback);
 
-
+	atFrame->push_back(0);
 	GLfloat sample_vertices[] = {
 		-1.00, -1.00, 1.00,
 		-1.00, -1.00, -1.00,
@@ -103,7 +118,8 @@ int main()
 	{
 		//_raw_data->at(i)->printAll();
 		OGLLine* _line = new OGLLine();
-		_line->setPoints(_raw_data->at(i)->getAllJoints());
+
+		_line->setPoints(_raw_data->at(i)->getAllJoints(), _raw_data->at(i)->getSkeletonIndices());
 		ske_anima->push_back(_line);
 	}
 
@@ -112,7 +128,7 @@ int main()
 
 
 	model = glm::mat4(1.0f);
-	projection = glm::perspective(zoom, (GLfloat)window->getBufferWidth() / window->getBufferHeight(), 0.1f, 100.0f);
+	projection = glm::perspective(zoom, (GLfloat)window->getBufferWidth() / window->getBufferHeight(), 0.1f, 5000.0f);
 
 
 
@@ -141,6 +157,16 @@ int main()
 		color_loc = shaderList[0].getColorLoc();
 
 
+		if (isLeftKeyDown)
+		{
+			camera_position = glm::vec3(turn_left_mat * glm::vec4(camera_position, 0.0f));
+		}
+		if (isRightKeyDown) {
+			camera_position = glm::vec3(turn_right_mat * glm::vec4(camera_position, 0.0f));
+		}
+
+
+
 		view = glm::lookAt(camera_position, camera_target, camera_up);
 
 		color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -150,7 +176,10 @@ int main()
 		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform4fv(color_loc, 1, glm::value_ptr(color));
 		
-		ske_anima->at(0)->drawPoints();
+		ske_anima->at(atFrame->at(0)/2)->drawPoints();
+		ske_anima->at(atFrame->at(0)/2)->drawLines();
+		++atFrame->at(0);
+		atFrame->at(0) %= ske_anima->size()*2;
 		//meshList[0]->drawMesh();
 
 		glUseProgram(0);
@@ -163,5 +192,74 @@ int main()
 
 	return 0;
 }
+
+void keyCallback(GLFWwindow* window, int key, int code, int action, int mode)
+{
+	std::cout << key << std::endl;
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+
+	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+	{
+		isLeftKeyDown = true;
+	}
+
+	if (key == GLFW_KEY_LEFT && action == GLFW_RELEASE)
+	{
+		isLeftKeyDown = false;
+	}
+
+	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+	{
+		isRightKeyDown = true;
+	}
+
+	if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
+	{
+		isRightKeyDown = false;
+	}
+
+	if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
+	{
+		
+	}
+
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+		question_number = 1;
+	}
+
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+	{
+		question_number = 2;
+	}
+
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+	{
+		question_number = 3;
+	}
+
+	if (key == GLFW_KEY_4 && action == GLFW_PRESS)
+	{
+		question_number = 4;
+	}
+
+	if (question_number == 1)
+	{
+		
+
+		
+	}
+
+	if (question_number == -1)
+	{
+		
+
+	}
+
+}
+
 
 

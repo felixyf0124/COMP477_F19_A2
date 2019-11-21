@@ -7,6 +7,8 @@ SkeletonJoint::SkeletonJoint(int id)
 	this->children = new vector<SkeletonJoint*>();
 	this->position = glm::vec3(0);
 	this->offsetPosition = glm::vec3(0);
+	this->quatLocal = glm::quat();
+	this->quatOffset = glm::quat();
 }
 
 void SkeletonJoint::setId(int id)
@@ -119,13 +121,10 @@ vector<glm::vec3>* SkeletonJoint::getAllJoints()
 			SkeletonJoint* _next = this->getOffspringById(_skeleton->size());
 			if (_next != nullptr)
 			{
-				cout << _skeleton->size() << "joints\n";
 				_skeleton->push_back(_next->getPosition());
 			}
 			else
 			{
-				cout << "total " << _skeleton->size() << " joints\n";
-
 				return _skeleton;
 			}
 		}
@@ -138,11 +137,11 @@ vector<glm::vec3>* SkeletonJoint::getAllJoints()
 	}
 }
 
-vector<int>* SkeletonJoint::getSkeletonIndices()
+vector<GLuint>* SkeletonJoint::getSkeletonIndices()
 {
 	vector<glm::vec3>* _skeleton = this->getAllJoints();
 	SkeletonJoint* _root = this->getRootJoint();
-	vector<int>* _indices = new vector<int>();
+	vector<GLuint>* _indices = new vector<GLuint>();
 	for (GLuint i = 0; i < _skeleton->size()-1; ++i)
 	{
 		SkeletonJoint* _joint = _root->getOffspringById(i + 1);
@@ -158,7 +157,7 @@ vector<int>* SkeletonJoint::getSkeletonIndices()
 			return _indices;
 		}
 	}
-	return nullptr;
+	return _indices;
 }
 
 SkeletonJoint* const SkeletonJoint::getRootJoint()
@@ -175,6 +174,16 @@ SkeletonJoint* const SkeletonJoint::getRootJoint()
 	else
 	{
 		return nullptr;
+	}
+}
+
+void SkeletonJoint::cookQuaternion()
+{
+	if (this->id != 0) {
+		glm::vec3 A = this->getParent()->getPosition();
+		glm::vec3 B = this->getPosition();
+		//glm::vec3 C = 
+		//this->quatLocal = special::quatFromTwoVec(_parent,)
 	}
 }
 

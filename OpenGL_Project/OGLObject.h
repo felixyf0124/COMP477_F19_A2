@@ -65,6 +65,7 @@ public:
 	// add child obj vector variable as component obj so can manipulate as a whole body
 
 private:
+	int id;
 	vector<GLfloat> vertices;
 	vector<GLuint> indices;
 	vector<OGLMesh*> meshes;
