@@ -62,6 +62,35 @@ glm::vec3 animate_points(glm::vec3 cubePoint, glm::vec3 spherePoint, float curre
 	}
 }
 
+static void keyCallback(GLFWwindow* window, int key, int code, int action, int mode)
+{
+	// Camera Movement:
+	if (key == GLFW_KEY_A && action == GLFW_PRESS)
+	{
+		camera_position.x -= 1.0f;
+	}
+	if (key == GLFW_KEY_D && action == GLFW_PRESS)
+	{
+		camera_position.x += 1.0f;
+	}
+	if (key == GLFW_KEY_W && action == GLFW_PRESS)
+	{
+		camera_position.z -= 1.0f;
+	}
+	if (key == GLFW_KEY_S && action == GLFW_PRESS)
+	{
+		camera_position.z += 1.0f;
+	}
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+	{
+		camera_position.y += 1.0f;
+	}
+	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
+	{
+		camera_position.y -= 1.0f;
+	}
+}
+
 void problem1()
 {
 	window = new OGLWindow(window_w, window_h, APP_TITLE);
@@ -71,63 +100,105 @@ void problem1()
 	camera_target = glm::vec3(0.0f, 0.0f, 0.0f);
 	camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	//glfwSetKeyCallback(window->getWindow(), keyCallback);
+	glfwSetKeyCallback(window->getWindow(), keyCallback);
 
 	// Q1 values:
 	float pointlist[] =
 	{
-		-1.00, -1.00, 1.00,
-		-1.00, -1.00, -1.00,
-		1.00, -1.00, -1.00,
-		1.00, -1.00, 1.00,
-		-1.00, 1.00, 1.00,
-		1.00, 1.00, 1.00,
-		1.00, 1.00, -1.00,
-		-1.00, 1.00, -1.00,
+		// Control Points:
+		-1.00, -1.00, 1.00, // 0
+		-1.00, -1.00, -1.00, // 1
+		1.00, -1.00, -1.00, // 2
+		1.00, -1.00, 1.00, // 3
+		-1.00, 1.00, 1.00, // 4
+		1.00, 1.00, 1.00, // 5
+		1.00, 1.00, -1.00, // 6
+		-1.00, 1.00, -1.00, // 7
 
-		0.00, -1.00, 1.00,
-		0.00, -1.00, -1.00,
-		0.00, 1.00, 1.00,
-		0.00, 1.00, -1.00,
+		0.00, -1.00, 1.00, // 8
+		0.00, -1.00, -1.00, // 9
+		0.00, 1.00, 1.00, // 10
+		0.00, 1.00, -1.00, // 11
 
-		-1.00, 0.00, 1.00,
-		-1.00, 0.00, -1.00,
-		1.00, 0.00, -1.00,
-		1.00, 0.00, 1.00,
+		-1.00, 0.00, 1.00, // 12
+		-1.00, 0.00, -1.00, // 13
+		1.00, 0.00, -1.00, // 14
+		1.00, 0.00, 1.00, // 15
 
-		-1.00, -1.00, 0.00,
-		1.00, -1.00, 0.00,
-		-1.00, 1.00, 0.00,
-		1.00, 1.00, 0.00,
+		-1.00, -1.00, 0.00, // 16
+		1.00, -1.00, 0.00, // 17
+		-1.00, 1.00, 0.00, // 18
+		1.00, 1.00, 0.00, // 19
 
-		0.00, 0.00, 1.00,
-		0.00, 0.00, -1.00,
-		0.00, 1.00, 0.00,
-		0.00, -1.00, 0.00,
-		0.00, 0.00, -1.00,
-		0.00, 0.00, 1.00,
-		1.00, 0.00, 0.00,
-		-1.00, 0.00, 0.00,
+		0.00, 0.00, 1.00, // 20
+		0.00, 0.00, -1.00, // 21
+		0.00, 1.00, 0.00, // 22
+		0.00, -1.00, 0.00, // 23
+		1.00, 0.00, 0.00, // 24
+		-1.00, 0.00, 0.00, // 25
 	};
 	float sphereRadius = 2.0f;
 	vector<float> centerOfCube = { 0.0f, 0.0f, 0.0f };
 
 	GLuint sample_indices[] = {
-		0, 1, 2,
-		2, 3, 0,
-		4, 5, 6,
-		6, 7, 4,
-		0, 3, 5,
-		5, 4, 0,
-		3, 2, 6,
-		6, 5, 3,
-		2, 1, 7,
-		7, 6, 2,
-		1, 0, 4,
-		4, 7, 1
+		0, 16, 25,
+		0, 12, 25,
+		0, 16, 23,
+		0, 8, 23,
+		0, 12, 20,
+		0, 8, 20,
+
+		1, 16, 25,
+		1, 13, 25,
+		1, 16, 23,
+		1, 9, 23,
+		1, 13, 21,
+		1, 9, 21,
+
+		2, 17, 24,
+		2, 14, 24,
+		2, 17, 23,
+		2, 9, 23,
+		2, 14, 21,
+		2, 9, 21,
+
+		3, 17, 24,
+		3, 15, 24,
+		3, 17, 23,
+		3, 8, 23,
+		3, 15, 20,
+		3, 8, 20,
+
+		4, 18, 25,
+		4, 12, 25,
+		4, 18, 22,
+		4, 10, 22,
+		4, 12, 20,
+		4, 10, 20,
+
+		5, 19, 24,
+		5, 15, 24,
+		5, 19, 22,
+		5, 10, 22,
+		5, 15, 20,
+		5, 10, 20,
+
+		6, 19, 24,
+		6, 14, 24,
+		6, 19, 22,
+		6, 11, 22,
+		6, 14, 21,
+		6, 11, 21,
+
+		7, 18, 25,
+		7, 13, 25,
+		7, 18, 22,
+		7, 11, 22,
+		7, 13, 21,
+		7, 11, 21,
 	};
 	GLuint vertics_size = sizeof(pointlist) / sizeof(*pointlist);
-	GLuint indices_size = 36;
+	GLuint indices_size = sizeof(sample_indices) / sizeof(*sample_indices);
 
 
 	//create shaders
@@ -220,6 +291,19 @@ void problem1()
 
 		view = glm::lookAt(camera_position, camera_target, camera_up);
 
+		// Draw the mesh:
+
+		color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+		glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniform4fv(color_loc, 1, glm::value_ptr(color));
+
+		cube->drawMesh();
+
+		// Draw the points:
+
 		color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 		glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
@@ -227,12 +311,9 @@ void problem1()
 		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform4fv(color_loc, 1, glm::value_ptr(color));
 
-		// Draw the points:
-
-		// meshList[0]->drawPoints();
 		cube->drawPoints();
 		
-
+		delete cube;
 		glUseProgram(0);
 
 		window->swapBuffers();

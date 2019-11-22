@@ -65,6 +65,17 @@ void OGLMesh::drawPoints()
 	glBindVertexArray(0);
 }
 
+void OGLMesh::drawLines()
+{
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO);
+
+	glDrawArrays(GL_LINE_STRIP, 0, this->vertex_size / 3);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
 void OGLMesh::clearMesh()
 {
 	if (EBO != 0)
