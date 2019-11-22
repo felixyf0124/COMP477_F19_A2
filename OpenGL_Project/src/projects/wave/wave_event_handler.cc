@@ -1,4 +1,4 @@
-#include "projects/light/light_event_handler.hh"
+#include "projects/wave/wave_event_handler.hh"
 
 #include <iostream>
 #include <mutex>
@@ -47,11 +47,13 @@ bool firstMouse = true;
 
 // Handles
 std::shared_ptr<GraphicContext>         context_handle;
+std::shared_ptr<ObstacleCollision>      _ObstacleHandle;
 
 void MouseButtonCallBack(GLFWwindow* a_pWindow, int a_nButtonID, int a_nAction, int a_nMods) {
   switch (a_nButtonID) {
   case GLFW_MOUSE_BUTTON_LEFT:
     if (a_nAction == GLFW_PRESS) {
+		mouse_state = POI_MOVING;
     }
     else {
       mouse_state = FREE_CURSOR;
@@ -128,6 +130,26 @@ void MouseCursorPositionCallback(GLFWwindow* a_pWindow, double a_dXPos, double a
     auto up = glm::cross(camera_direction, right);
     camera::LookAt(position, position + camera_direction, up);
   }
+  else if (mouse_state == POI_MOVING) {
+      glm::mat4 P = camera::GetProjectionMatrix();
+      glm::mat4 V = camera::GetViewMatrix();
+
+      glm::vec3 from = glm::unProject(
+        glm::vec3(a_dXPos, _WindowHeight - a_dYPos, 0.0f), V, P,
+        glm::vec4(0, 0, _WindowWidth, _WindowHeight));
+      glm::vec3 to = glm::unProject(
+        glm::vec3(a_dXPos, _WindowHeight - a_dYPos, 1.0f), V, P,
+        glm::vec4(0, 0, _WindowWidth, _WindowHeight));
+
+      const glm::f32vec3 wCameraPos = camera::GetEyePosition();
+
+      glm::f32vec3 wNewPos = from + glm::normalize((to - from)) *
+        glm::distance(wCameraPos, glm::f32vec3(0.0f, 0.0f, 0.0f));
+	  std::cout << wNewPos.x << ", "  << wNewPos.y << ", "  << wNewPos.z << std::endl;
+	  _ObstacleHandle -> SetPOI(wNewPos);
+      // _AttractorHandle->SetAttractorPosition(wNewPos);
+      // _ColorUpdaterHandle->SetPOI(wNewPos);
+    }
   else {
     // DO NOTHING
   }
@@ -189,11 +211,13 @@ void FramebufferSizeCallback(GLFWwindow* a_pWindow, int a_nWidth, int a_nHeight)
 }
 }
 
-void Init(const std::shared_ptr<GraphicContext>& a_pCtxt) {
+void Init(const std::shared_ptr<GraphicContext>& a_pCtxt,
+	const std::shared_ptr<ObstacleCollision>& a_pObstacleHandle) {
   std::call_once(init_flag, [&]() {
     // Get a reference on the dynamics of this project
     //_AttractorHandle = a_pAttractorHandle;
     //_ColorUpdaterHandle = a_pColorUpdater;
+	  _ObstacleHandle = a_pObstacleHandle;
 
     // TODO: If it's worth it, move these hardcoded values someplace else
     yaw = -90.0f;

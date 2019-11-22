@@ -19,6 +19,7 @@
 
 // Specific project particle blueprints
 #include "projects/wave/wave_event_handler.hh"
+#include "projects/wave/obstacle_collision.hh"
 #include "projects/wave/wave_blueprint.hh"
 #include "projects/wave/wave_scene.hh"
 
@@ -76,7 +77,7 @@ void Init() {
   blueprint::wave_system_builder::Create();
 
   // Event handler initialization
-  event_handler::Init(graphic_context);
+  event_handler::Init(graphic_context, blueprint::wave_system_builder::GetObstacleHandle());
 }
 
 void Run() {

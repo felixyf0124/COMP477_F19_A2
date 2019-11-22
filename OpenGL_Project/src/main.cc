@@ -20,6 +20,6 @@
 using namespace gem::particle;
 
 int main(int argc, const char *argv[]) {
-  app::Launch("lit_particles");
+  app::Launch("wave");
   return app::GetAppStatusError();
 }

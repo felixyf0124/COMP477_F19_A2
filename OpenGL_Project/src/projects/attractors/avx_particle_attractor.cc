@@ -15,7 +15,7 @@
 
 #include <immintrin.h>
 #include "utils/macro_definitions.hh"
-#include "glm/gtx/simd_vec4.hpp"
+#include "glm/vec4.hpp"
 
 namespace gem { namespace particle {
 namespace attractor_project {
