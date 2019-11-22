@@ -80,7 +80,7 @@ void Init() {
   // Particle system initialization
   particle_module::Init();
   blueprint::attractor_system_builder::SetParticleSystemName("Amazing attractor system");
-  blueprint::attractor_system_builder::SetParticleCount(500001u);
+  blueprint::attractor_system_builder::SetParticleCount(5000u);
   blueprint::attractor_system_builder::Create();
 
   // Event handler initialization

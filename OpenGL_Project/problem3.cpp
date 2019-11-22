@@ -27,7 +27,8 @@ using namespace gem::particle;
 
 void problem3()
 {
-	app::Launch("lit_particles");
+
+	app::Launch("wave");
 	cout << app::GetAppStatusError() << endl;
 	//window = new OGLWindow(window_w, window_h, APP_TITLE);
 	//window->initialize();

@@ -22,6 +22,7 @@
 #include "projects/light/light_project.hh"
 #include "projects/skybox/skybox_project.hh"
 #include "projects/lit_particles/lit_particles_project.hh"
+#include "
 
 namespace gem {
 namespace particle {
@@ -42,6 +43,7 @@ void Init() {
     light_project::RegisterProject();
 	  skybox_project::RegisterProject();
     lit_particles_project::RegisterProject();
+	wave_projects::RegisterProject();
   });
 }
 

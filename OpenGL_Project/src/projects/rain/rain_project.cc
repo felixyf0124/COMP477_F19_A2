@@ -84,8 +84,8 @@ void Init() {
   particle_module::Init();
   blueprint::rain_particles_builder::SetParticleSystemName("Amazing rain system");
   blueprint::rain_particles_builder::SetTexture("textures/raindrop.png");
-  blueprint::rain_particles_builder::SetEmissionRate(100000.0);
-  blueprint::rain_particles_builder::SetParticleCount(1000000u);
+  blueprint::rain_particles_builder::SetEmissionRate(1000.0);
+  blueprint::rain_particles_builder::SetParticleCount(10000u);
   blueprint::rain_particles_builder::Create();
 }
 
