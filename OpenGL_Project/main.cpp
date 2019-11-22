@@ -110,9 +110,10 @@ int main()
 	cube->createMesh(sample_vertices, sample_indices, vertics_size, indices_size);
 	meshList.push_back(cube);
 	
-	printf("here 98 main\n");
+	//printf("here 98 main\n");
 	RawDataLoader* dataLoader = new RawDataLoader();
-	vector<SkeletonJoint*>* _raw_data = dataLoader->loadRawData("raw_data_1");
+	//vector<SkeletonJoint*>* _raw_data = dataLoader->loadRawData("raw_data_1");
+	vector<SkeletonJoint*>* _raw_data = dataLoader->loadRawData("skeleton.out");
 	vector<OGLLine*>* ske_anima = new vector<OGLLine*>();
 	for (GLuint i = 0; i < _raw_data->size(); ++i)
 	{
