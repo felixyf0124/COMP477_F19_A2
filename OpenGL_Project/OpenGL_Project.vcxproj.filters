@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="common.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="objloader.cpp" />
+    <ClCompile Include="OGLLine.cpp" />
+    <ClCompile Include="OGLMesh.cpp" />
+    <ClCompile Include="OGLObject.cpp" />
+    <ClCompile Include="OGLShader.cpp" />
+    <ClCompile Include="OGLWindow.cpp" />
+    <ClCompile Include="problem1.cpp" />
+    <ClCompile Include="problem2.cpp" />
+    <ClCompile Include="problem3.cpp" />
+    <ClCompile Include="RawDataLoader.cpp" />
+    <ClCompile Include="SkeletonJoint.cpp" />
+    <ClCompile Include="problem4.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="objloader.hpp" />
+    <ClInclude Include="OGLLine.h" />
+    <ClInclude Include="common.hpp" />
+    <ClInclude Include="problem1.hpp" />
+    <ClInclude Include="OGLMesh.h" />
+    <ClInclude Include="OGLObject.h" />
+    <ClInclude Include="OGLShader.h" />
+    <ClInclude Include="OGLWindow.h" />
+    <ClInclude Include="problem2.hpp" />
+    <ClInclude Include="problem3.hpp" />
+    <ClInclude Include="RawDataLoader.h" />
+    <ClInclude Include="SkeletonJoint.h" />
+    <ClInclude Include="problem4.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment.shader" />
+    <None Include="vertex.shader" />
+  </ItemGroup>
+</Project>
