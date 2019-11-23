@@ -21,9 +21,12 @@ Revision: 1.0
 | `Yefei Xue` | 26433979 | ye_xue | felixyf0124 |
 
 
-# Dependency 
+# Dependency or Libs or references
 
  - glew
  - glfw
  - glm
- 
+ - OpenNI2
+ - NiTE 2
+ - FreeImage
+ - https://github.com/frtru/GemParticles
