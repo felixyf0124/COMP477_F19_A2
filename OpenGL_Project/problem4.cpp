@@ -65,7 +65,7 @@ void createShaders() {
 }
 
 
-int main()
+int problem4()
 {
 	window = new OGLWindow(window_w, window_h, APP_TITLE);
 	window->initialize();
@@ -109,13 +109,13 @@ int main()
 	OGLMesh* cube = new OGLMesh();
 	cube->createMesh(sample_vertices, sample_indices, vertics_size, indices_size);
 	meshList.push_back(cube);
-	
+
 	//printf("here 98 main\n");
 	RawDataLoader* dataLoader = new RawDataLoader();
 	//vector<SkeletonJoint*>* _raw_data = dataLoader->loadRawData("raw_data_1");
 	vector<SkeletonJoint*>* _raw_data = dataLoader->loadRawData("raw_data_1");
 	vector<SkeletonJoint*>* _joint_18_data = new vector<SkeletonJoint*>();
-	
+
 
 	vector<OGLLine*>* ske_anima = new vector<OGLLine*>();
 	_raw_data->at(0)->printAll();
@@ -186,11 +186,11 @@ int main()
 		glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform4fv(color_loc, 1, glm::value_ptr(color));
-		
-		ske_anima->at(atFrame->at(0)/2)->drawPoints();
-		ske_anima->at(atFrame->at(0)/2)->drawLines();
+
+		ske_anima->at(atFrame->at(0) / 2)->drawPoints();
+		ske_anima->at(atFrame->at(0) / 2)->drawLines();
 		++atFrame->at(0);
-		atFrame->at(0) %= ske_anima->size()*2;
+		atFrame->at(0) %= ske_anima->size() * 2;
 		//meshList[0]->drawMesh();
 
 		glUseProgram(0);
@@ -232,8 +232,8 @@ void keyCallback(GLFWwindow* window, int key, int code, int action, int mode)
 		isRightKeyDown = false;
 	}
 
-	
-	
+
+
 
 }
 

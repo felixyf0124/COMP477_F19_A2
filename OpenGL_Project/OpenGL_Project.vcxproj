@@ -166,6 +166,7 @@
     <ClCompile Include="OGLObject.cpp" />
     <ClCompile Include="OGLShader.cpp" />
     <ClCompile Include="OGLWindow.cpp" />
+    <ClCompile Include="problem4.cpp" />
     <ClCompile Include="RawDataLoader.cpp" />
     <ClCompile Include="SkeletonJoint.cpp" />
   </ItemGroup>
@@ -178,6 +179,7 @@
     <ClInclude Include="OGLObject.h" />
     <ClInclude Include="OGLShader.h" />
     <ClInclude Include="OGLWindow.h" />
+    <ClInclude Include="problem4.h" />
     <ClInclude Include="RawDataLoader.h" />
     <ClInclude Include="SkeletonJoint.h" />
   </ItemGroup>
