@@ -65,7 +65,7 @@ void createShaders() {
 }
 
 
-int problem4()
+void problem4()
 {
 	window = new OGLWindow(window_w, window_h, APP_TITLE);
 	window->initialize();
@@ -201,7 +201,6 @@ int problem4()
 
 	glfwTerminate();
 
-	return 0;
 }
 
 void keyCallback(GLFWwindow* window, int key, int code, int action, int mode)

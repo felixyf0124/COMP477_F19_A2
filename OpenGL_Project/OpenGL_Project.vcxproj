@@ -23,7 +23,7 @@
     <ProjectGuid>{D71145A4-4EDF-42DA-A5FD-042A16F32C3B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>OpenGLProject</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -187,7 +187,7 @@
     <ClInclude Include="OGLWindow.h" />
     <ClInclude Include="problem2.hpp" />
     <ClInclude Include="problem3.hpp" />
-    <ClInclude Include="problem4.h" />
+    <ClInclude Include="problem4.hpp" />
     <ClInclude Include="RawDataLoader.h" />
     <ClInclude Include="SkeletonJoint.h" />
   </ItemGroup>

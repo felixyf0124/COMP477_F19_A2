@@ -2,6 +2,7 @@
 #include "problem1.hpp"
 #include "problem2.hpp"
 #include "problem3.hpp"
+#include "problem4.hpp"
 #include <iostream>
 using namespace std;
 
@@ -31,7 +32,7 @@ int main()
 			break;
 		case 4:
 			cout << "Running Problem 4: Mocap replay." << endl << "Close the window to select another problem." << endl;
-			// problem4();
+			problem4();
 			break;
 		case 0:
 			return 0;
