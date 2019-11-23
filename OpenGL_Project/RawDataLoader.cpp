@@ -77,3 +77,71 @@ vector<SkeletonJoint*>* const RawDataLoader::animaGenerator(vector<SkeletonJoint
 	
 	return nullptr;
 }
+
+void RawDataLoader::animaTestDumper(vector<SkeletonJoint*>* joint_18_set)
+{
+	vector<string>* _animaData = new vector<string>();
+
+	for (GLuint i = 0; i < joint_18_set->size(); ++i)
+	{
+
+		SkeletonJoint* _root = joint_18_set->at(i)->getRootJoint();
+
+		_root->cookAllQuaternion();
+
+		
+	}
+
+	for (GLuint i = 0; i < joint_18_set->size()-1; ++i)
+	{
+
+		SkeletonJoint* _root = joint_18_set->at(0)->getRootJoint();
+		SkeletonJoint* _root_next = joint_18_set->at(i)->getRootJoint();
+
+
+		glm::quat _quat_r = _root->getQuatLocal();
+		glm::quat _quat_r_next = _root_next->getQuatLocal();
+		string _frame_data = to_string(i) + " "
+			+ to_string(_quat_r_next.w- _quat_r.w) + " "
+			+ to_string(_quat_r_next.x- _quat_r.w) + " "
+			+ to_string(_quat_r_next.y- _quat_r.w) + " "
+			+ to_string(_quat_r_next.z- _quat_r.w);
+		//cout << _quat_r.w<<"|"<< _quat_r.x<<"|" << _quat_r.y << endl;
+		for (GLuint j = 1; j < _root->getAllJoints()->size(); ++j)
+		{
+
+			SkeletonJoint* _joint = _root->getOffspringById(j);
+			SkeletonJoint* _joint_next = _root_next->getOffspringById(j);
+			//_joint->cookAllQuaternion();
+
+			glm::quat _quat = _joint->getQuatLocal();
+			glm::quat _quat_next = _joint_next->getQuatLocal();
+			//cout << _quat.w << "|" << _quat.x << "|" << _quat.y << endl;
+
+			_frame_data += " " + to_string(_quat_next.w-_quat.w)
+				+ " " + to_string(_quat_next.x-_quat.x)
+				+ " " + to_string(_quat_next.y-_quat.y)
+				+ " " + to_string(_quat_next.z-_quat.z);
+		}
+		_frame_data += "\n";
+		//cout << _frame_data;
+		_animaData->push_back(_frame_data);
+	}
+
+	//time_t _t_now = time(0);
+	//string dt = ctime(&_t_now);
+	//string _fileName = "sample_" + dt + ".anima";
+	string _fileName = "A2_sample.anima";
+	//_fileName.replace(_fileName.begin(), _fileName.end(), " ", "_");
+
+	std::ofstream _file;
+
+	_file.open(_fileName);
+	for (GLuint i = 0; i < _animaData->size(); ++i)
+	{
+		_file << _animaData->at(i);
+	}
+	
+	_file.close();
+	
+}

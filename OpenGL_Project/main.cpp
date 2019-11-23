@@ -113,8 +113,12 @@ int main()
 	//printf("here 98 main\n");
 	RawDataLoader* dataLoader = new RawDataLoader();
 	//vector<SkeletonJoint*>* _raw_data = dataLoader->loadRawData("raw_data_1");
-	vector<SkeletonJoint*>* _raw_data = dataLoader->loadRawData("skeleton.out");
+	vector<SkeletonJoint*>* _raw_data = dataLoader->loadRawData("raw_data_1");
+	vector<SkeletonJoint*>* _joint_18_data = new vector<SkeletonJoint*>();
+	
+
 	vector<OGLLine*>* ske_anima = new vector<OGLLine*>();
+	_raw_data->at(0)->printAll();
 	for (GLuint i = 0; i < _raw_data->size(); ++i)
 	{
 		//_raw_data->at(i)->printAll();
@@ -122,7 +126,13 @@ int main()
 
 		_line->setPoints(_raw_data->at(i)->getAllJoints(), _raw_data->at(i)->getSkeletonIndices());
 		ske_anima->push_back(_line);
+		_joint_18_data->push_back(_raw_data->at(i)->convert16To18Joints());
 	}
+	cout << endl;
+	_joint_18_data->at(0)->printAll();
+	cout << endl;
+
+	dataLoader->animaTestDumper(_joint_18_data);
 
 	//create shaders
 	createShaders();

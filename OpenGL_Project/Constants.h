@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <string>
 
 #include "glm\glm.hpp"
 #include "glm\gtx\quaternion.hpp"
@@ -31,13 +32,29 @@ namespace special
 		_rotation_axis = glm::normalize(glm::cross(start, end));
 
 		float _angle = glm::acos(_cos_theta);
-		float _invs = 1 / _angle;
+		//std::cout << _angle << std::endl; float _invs = 1 / _angle;
 		float _half_sin = sin(0.5f * _angle);
 		float _half_cos = cos(0.5f * _angle);
-
-		return glm::quat(_half_cos,
+		glm::quat _quat = glm::quat(_half_cos,
 			_rotation_axis.x * _half_sin,
 			_rotation_axis.y * _half_sin,
 			_rotation_axis.z * _half_sin);
+		/*if (std::to_string(_angle) == "-nan(ind)" || _angle == 0
+			|| std::to_string(_half_sin) == "-nan(ind)"
+			|| std::to_string(_half_cos) == "-nan(ind)")*/
+		if(isnan(_quat.w)|| isnan(_quat.x)|| isnan(_quat.y)|| isnan(_quat.z))
+		{
+			return glm::quat(1,
+				0,
+				0,
+				0);
+		}
+		else
+		{
+			return glm::quat(_half_cos,
+				_rotation_axis.x * _half_sin,
+				_rotation_axis.y * _half_sin,
+				_rotation_axis.z * _half_sin);
+		}
 	}
 }

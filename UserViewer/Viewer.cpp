@@ -522,23 +522,23 @@ void SampleViewer::Display()
 				nite::SkeletonJoint _R_foot = _dunp_data.getJoint(nite::JOINT_RIGHT_FOOT);
 
 
-				//if (_head.getPositionConfidence() == 1
-				//	&& _neck.getPositionConfidence() == 1
-				//	&& _L_shoulder.getPositionConfidence() == 1
-				//	&& _R_shoulder.getPositionConfidence() == 1
-				//	&& _torso.getPositionConfidence() == 1
-				//	&& _L_elbow.getPositionConfidence() == 1
-				//	&& _R_elbow.getPositionConfidence() == 1
-				//	&& _L_hip.getPositionConfidence() == 1
-				//	&& _R_hip.getPositionConfidence() == 1
-				//	&& _L_hand.getPositionConfidence() == 1
-				//	&& _R_hand.getPositionConfidence() == 1
-				//	&& _L_knee.getPositionConfidence() == 1
-				//	&& _R_knee.getPositionConfidence() == 1
-				//	&& _L_foot.getPositionConfidence() == 1
-				//	&& _R_foot.getPositionConfidence() == 1
-				//	)
-				if (_head.getPositionConfidence() > 0.5
+				if (_head.getPositionConfidence() == 1
+					&& _neck.getPositionConfidence() == 1
+					&& _L_shoulder.getPositionConfidence() == 1
+					&& _R_shoulder.getPositionConfidence() == 1
+					&& _torso.getPositionConfidence() == 1
+					&& _L_elbow.getPositionConfidence() == 1
+					&& _R_elbow.getPositionConfidence() == 1
+					&& _L_hip.getPositionConfidence() == 1
+					&& _R_hip.getPositionConfidence() == 1
+					&& _L_hand.getPositionConfidence() == 1
+					&& _R_hand.getPositionConfidence() == 1
+					&& _L_knee.getPositionConfidence() == 1
+					&& _R_knee.getPositionConfidence() == 1
+					&& _L_foot.getPositionConfidence() == 1
+					&& _R_foot.getPositionConfidence() == 1
+					)
+				/*if (_head.getPositionConfidence() > 0.5
 					&& _neck.getPositionConfidence() > 0.5
 					&& _L_shoulder.getPositionConfidence() > 0.5
 					&& _R_shoulder.getPositionConfidence() > 0.5
@@ -553,114 +553,124 @@ void SampleViewer::Display()
 					&& _R_knee.getPositionConfidence() > 0.5
 					&& _L_foot.getPositionConfidence() > 0.5
 					&& _R_foot.getPositionConfidence() > 0.5
-					)
+					)*/
 
 				{
-
-					//head
-					_frame_data += "0 "
-						+ std::to_string(_head.getPosition().x) + " "
-						+ std::to_string(_head.getPosition().y) + " "
-						+ std::to_string(_head.getPosition().z) + " "
-						+ "-1\n";
-
 					//neck
-					_frame_data += "1 "
+					_frame_data += "0 "
 						+ std::to_string(_neck.getPosition().x) + " "
 						+ std::to_string(_neck.getPosition().y) + " "
 						+ std::to_string(_neck.getPosition().z) + " "
-						+ "0\n";
-
-					//left shoulder
-					_frame_data += "2 "
-						+ std::to_string(_L_shoulder.getPosition().x) + " "
-						+ std::to_string(_L_shoulder.getPosition().y) + " "
-						+ std::to_string(_L_shoulder.getPosition().z) + " "
-						+ "1\n";
-
-					//right shoulder
-					_frame_data += "3 "
-						+ std::to_string(_R_shoulder.getPosition().x) + " "
-						+ std::to_string(_R_shoulder.getPosition().y) + " "
-						+ std::to_string(_R_shoulder.getPosition().z) + " "
-						+ "1\n";
+						+ "-1\n";
 
 					//torso
-					_frame_data += "4 "
+					_frame_data += "1 "
 						+ std::to_string(_torso.getPosition().x) + " "
 						+ std::to_string(_torso.getPosition().y) + " "
 						+ std::to_string(_torso.getPosition().z) + " "
-						+ "1\n";
+						+ "0\n";
 
-					//left elbow
-					_frame_data += "5 "
-						+ std::to_string(_L_elbow.getPosition().x) + " "
-						+ std::to_string(_L_elbow.getPosition().y) + " "
-						+ std::to_string(_L_elbow.getPosition().z) + " "
+					//center hip
+					_frame_data += "2 "
+						+ std::to_string((_R_hip.getPosition().x + _L_hip.getPosition().x)/2.0f) + " "
+						+ std::to_string((_R_hip.getPosition().y + _L_hip.getPosition().y) / 2.0f) + " "
+						+ std::to_string((_R_hip.getPosition().z + _L_hip.getPosition().z) / 2.0f) + " "
+						+ "1\n";
+					
+					//head
+					_frame_data += "3 "
+						+ std::to_string(_head.getPosition().x) + " "
+						+ std::to_string(_head.getPosition().y) + " "
+						+ std::to_string(_head.getPosition().z) + " "
+						+ "0\n";
+
+					//right hip
+					_frame_data += "4 "
+						+ std::to_string(_R_hip.getPosition().x) + " "
+						+ std::to_string(_R_hip.getPosition().y) + " "
+						+ std::to_string(_R_hip.getPosition().z) + " "
 						+ "2\n";
 
-					//right elbow
+					//right knee
+					_frame_data += "5 "
+						+ std::to_string(_R_knee.getPosition().x) + " "
+						+ std::to_string(_R_knee.getPosition().y) + " "
+						+ std::to_string(_R_knee.getPosition().z) + " "
+						+ "4\n";
+
+					//right foot
 					_frame_data += "6 "
-						+ std::to_string(_R_elbow.getPosition().x) + " "
-						+ std::to_string(_R_elbow.getPosition().y) + " "
-						+ std::to_string(_R_elbow.getPosition().z) + " "
-						+ "3\n";
+						+ std::to_string(_R_foot.getPosition().x) + " "
+						+ std::to_string(_R_foot.getPosition().y) + " "
+						+ std::to_string(_R_foot.getPosition().z) + " "
+						+ "5\n";
+
+					// when convert, need to add toe
 
 					//left hip
 					_frame_data += "7 "
 						+ std::to_string(_L_hip.getPosition().x) + " "
 						+ std::to_string(_L_hip.getPosition().y) + " "
 						+ std::to_string(_L_hip.getPosition().z) + " "
-						+ "4\n";
-
-					//right hip
-					_frame_data += "8 "
-						+ std::to_string(_R_hip.getPosition().x) + " "
-						+ std::to_string(_R_hip.getPosition().y) + " "
-						+ std::to_string(_R_hip.getPosition().z) + " "
-						+ "4\n";
-
-					//left hand
-					_frame_data += "9 "
-						+ std::to_string(_L_hand.getPosition().x) + " "
-						+ std::to_string(_L_hand.getPosition().y) + " "
-						+ std::to_string(_L_hand.getPosition().z) + " "
-						+ "5\n";
-
-					//right hand
-					_frame_data += "10 "
-						+ std::to_string(_R_hand.getPosition().x) + " "
-						+ std::to_string(_R_hand.getPosition().y) + " "
-						+ std::to_string(_R_hand.getPosition().z) + " "
-						+ "6\n";
+						+ "2\n";
 
 					//left knee
-					_frame_data += "11 "
+					_frame_data += "8 "
 						+ std::to_string(_L_knee.getPosition().x) + " "
 						+ std::to_string(_L_knee.getPosition().y) + " "
 						+ std::to_string(_L_knee.getPosition().z) + " "
 						+ "7\n";
 
-					//right knee
-					_frame_data += "12 "
-						+ std::to_string(_R_knee.getPosition().x) + " "
-						+ std::to_string(_R_knee.getPosition().y) + " "
-						+ std::to_string(_R_knee.getPosition().z) + " "
-						+ "8\n";
-
 					//left foot
-					_frame_data += "13 "
+					_frame_data += "9 "
 						+ std::to_string(_L_foot.getPosition().x) + " "
 						+ std::to_string(_L_foot.getPosition().y) + " "
 						+ std::to_string(_L_foot.getPosition().z) + " "
+						+ "8\n";
+
+					
+
+					//right shoulder
+					_frame_data += "10 "
+						+ std::to_string(_R_shoulder.getPosition().x) + " "
+						+ std::to_string(_R_shoulder.getPosition().y) + " "
+						+ std::to_string(_R_shoulder.getPosition().z) + " "
+						+ "0\n";
+
+					//right elbow
+					_frame_data += "11 "
+						+ std::to_string(_R_elbow.getPosition().x) + " "
+						+ std::to_string(_R_elbow.getPosition().y) + " "
+						+ std::to_string(_R_elbow.getPosition().z) + " "
+						+ "10\n";
+
+					//right hand
+					_frame_data += "12 "
+						+ std::to_string(_R_hand.getPosition().x) + " "
+						+ std::to_string(_R_hand.getPosition().y) + " "
+						+ std::to_string(_R_hand.getPosition().z) + " "
 						+ "11\n";
 
-					//right foot
+					//left shoulder
+					_frame_data += "13 "
+						+ std::to_string(_L_shoulder.getPosition().x) + " "
+						+ std::to_string(_L_shoulder.getPosition().y) + " "
+						+ std::to_string(_L_shoulder.getPosition().z) + " "
+						+ "0\n";
+
+					//left elbow
 					_frame_data += "14 "
-						+ std::to_string(_R_foot.getPosition().x) + " "
-						+ std::to_string(_R_foot.getPosition().y) + " "
-						+ std::to_string(_R_foot.getPosition().z) + " "
-						+ "12\n";
+						+ std::to_string(_L_elbow.getPosition().x) + " "
+						+ std::to_string(_L_elbow.getPosition().y) + " "
+						+ std::to_string(_L_elbow.getPosition().z) + " "
+						+ "13\n";
+					
+					//left hand
+					_frame_data += "15 "
+						+ std::to_string(_L_hand.getPosition().x) + " "
+						+ std::to_string(_L_hand.getPosition().y) + " "
+						+ std::to_string(_L_hand.getPosition().z) + " "
+						+ "14\n";
 
 					r_rawData->push_back(_frame_data);
 				}

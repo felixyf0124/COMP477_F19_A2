@@ -16,5 +16,7 @@ public:
 	vector<SkeletonJoint*>* const loadRawData(const string path);
 
 	vector<SkeletonJoint*>* const animaGenerator(vector<SkeletonJoint*>* raw_data);
+
+	void animaTestDumper(vector<SkeletonJoint*>* joint_18_set);
 };
 

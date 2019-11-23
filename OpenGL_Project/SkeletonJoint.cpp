@@ -7,8 +7,8 @@ SkeletonJoint::SkeletonJoint(int id)
 	this->children = new vector<SkeletonJoint*>();
 	this->position = glm::vec3(0);
 	this->offsetPosition = glm::vec3(0);
-	this->quatLocal = glm::quat();
-	this->quatOffset = glm::quat();
+	this->quatLocal = glm::quat(1, 0, 0, 0);
+	this->quatOffset = glm::quat(1, 0, 0, 0);
 }
 
 void SkeletonJoint::setId(int id)
@@ -29,6 +29,11 @@ void SkeletonJoint::setOffsetPosition(glm::vec3 offsetPosition)
 void SkeletonJoint::setParent(SkeletonJoint* const parent)
 {
 	this->parent = parent;
+}
+
+void SkeletonJoint::setQuatLocal(glm::quat quatLocal)
+{
+	this->quatLocal = quatLocal;
 }
 
 /*
@@ -57,6 +62,11 @@ glm::vec3 SkeletonJoint::getPosition()
 	return this->position;
 }
 
+glm::quat SkeletonJoint::getQuatLocal()
+{
+	return this->quatLocal;
+}
+
 SkeletonJoint* const SkeletonJoint::getParent()
 {
 	return this->parent;
@@ -80,6 +90,96 @@ SkeletonJoint* const SkeletonJoint::getChildAtId(int id)
 vector<SkeletonJoint*>* const SkeletonJoint::getChildren()
 {
 	return this->children;
+}
+
+/*
+in order to make & replay .anima, we have to convert 16 joints to the 18 joints
+with the correct associated id
+missing right toe at 7 with parent 6
+missing left  toe at 11 with parent 10
+*/
+SkeletonJoint* const SkeletonJoint::convert16To18Joints()
+{
+	SkeletonJoint* _root_18 = new SkeletonJoint(0);
+	SkeletonJoint* _root = this->getRootJoint();
+	_root_18->setPosition(_root->getPosition());
+
+	for (GLuint i = 1; i < 18; ++i)
+	{
+		if (i < 7)
+		{
+			SkeletonJoint* _joint_18 = new SkeletonJoint(i);
+			SkeletonJoint* _joint_16 = _root->getOffspringById(i);
+			GLuint _parent_id = _joint_16->getParent()->getId();
+			if (_parent_id == 0) {
+				_root_18->addChild(_joint_18);
+			}
+			else
+			{
+				_root_18->getOffspringById(_parent_id)->addChild(_joint_18);
+			}
+			_joint_18->setPosition(_joint_16->getPosition());
+		}
+		else if (i == 7)
+		{
+			SkeletonJoint* _right_toe = new SkeletonJoint(7);
+			GLuint _parent_id = 6;
+			_root_18->getOffspringById(_parent_id)->addChild(_right_toe);
+		}
+		else if (i < 11)
+		{
+			SkeletonJoint* _joint_18 = new SkeletonJoint(i);
+			SkeletonJoint* _joint_16 = _root->getOffspringById(i - 1);
+			GLuint _parent_id = _joint_16->getParent()->getId();
+			if (_parent_id == 0) {
+				_root_18->addChild(_joint_18);
+			}
+			else if (_parent_id < 7)
+			{
+				_root_18->getOffspringById(_parent_id)->addChild(_joint_18);
+			}
+			else if (_parent_id >= 7 && _parent_id < 11)
+			{
+				++_parent_id;
+
+				_root_18->getOffspringById(_parent_id)->addChild(_joint_18);
+			}
+			_joint_18->setPosition(_joint_16->getPosition());
+		}
+		else if(i == 11)
+		{
+			SkeletonJoint* _left_toe = new SkeletonJoint(11);
+			GLuint _parent_id = 10;
+			_root_18->getOffspringById(_parent_id)->addChild(_left_toe);
+		}
+		else
+		{
+			SkeletonJoint* _joint_18 = new SkeletonJoint(i);
+			SkeletonJoint* _joint_16 = _root->getOffspringById(i - 2);
+			GLuint _parent_id = _joint_16->getParent()->getId();
+			if (_parent_id == 0) {
+				_root_18->addChild(_joint_18);
+			}
+			else if (_parent_id < 7)
+			{
+				_root_18->getOffspringById(_parent_id)->addChild(_joint_18);
+			}
+			else if (_parent_id >= 7 && _parent_id < 11)
+			{
+				++_parent_id;
+
+				_root_18->getOffspringById(_parent_id)->addChild(_joint_18);
+			}
+			else if(_parent_id >= 11)
+			{
+				_parent_id += 2;
+				_root_18->getOffspringById(_parent_id)->addChild(_joint_18);
+			}
+			_joint_18->setPosition(_joint_16->getPosition());
+		}
+	}
+
+	return _root_18;
 }
 
 /**
@@ -187,17 +287,45 @@ void SkeletonJoint::cookQuaternion()
 	}
 }
 
+glm::quat SkeletonJoint::cookQuaternion(glm::vec3 A, glm::vec3 B, glm::vec3 C)
+{
+	return special::quatFromTwoVec(B - A, C - B);;
+}
+
 /*
-	this only functioning when this is the root joint
+	this only functioning when this is the root joint & the joint set is coverted to joint_18
 */
 void SkeletonJoint::cookAllQuaternion()
 {
-	if (this->id == 0)
+	if (this->id == 0 && this->getAllJoints()->size() == 18)
 	{
 		for (GLuint i = 1; i < this->getAllJoints()->size(); ++i)
 		{
-			SkeletonJoint* _joint = this->getOffspringById(i);
-			_joint->cookQuaternion();
+			// ignore two toe joints & center hip
+			if (i != 7 && i != 11 && i != 2)
+			{
+				if (i == 3)
+				{
+					SkeletonJoint* _joint = this->getOffspringById(i);
+					glm::vec3 A = this->getOffspringById(1)->getPosition();
+					glm::vec3 B = this->getPosition();
+					glm::vec3 C = _joint->getPosition();
+					_joint->setQuatLocal(cookQuaternion(A, B, C));
+				}
+				else 
+				{
+					SkeletonJoint* _joint = this->getOffspringById(i);
+					
+					if (_joint->getChildren()->size() != 0)
+					{
+						glm::vec3 A = _joint->getParent()->getPosition();
+						glm::vec3 B = _joint->getPosition();
+						glm::vec3 C = _joint->getChildren()->at(0)->getPosition();
+						glm::quat _quat = cookQuaternion(A, B, C);
+						_joint->setQuatLocal(_quat);
+					}
+				}
+			}
 		}
 	}
 }
