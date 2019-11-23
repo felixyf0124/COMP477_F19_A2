@@ -23,7 +23,7 @@
     <ProjectGuid>{D71145A4-4EDF-42DA-A5FD-042A16F32C3B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>OpenGLProject</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -91,14 +91,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDIr)/OpenGL_dependency/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDIr)/OpenGL_dependency/include;$(SolutionDIr)/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDIr)/OpenGL_dependency/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;FreeImage.lib;ParticleSystem.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="common.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="objloader.cpp" />
     <ClCompile Include="OGLLine.cpp" />
@@ -166,6 +167,9 @@
     <ClCompile Include="OGLObject.cpp" />
     <ClCompile Include="OGLShader.cpp" />
     <ClCompile Include="OGLWindow.cpp" />
+    <ClCompile Include="problem1.cpp" />
+    <ClCompile Include="problem2.cpp" />
+    <ClCompile Include="problem3.cpp" />
     <ClCompile Include="problem4.cpp" />
     <ClCompile Include="RawDataLoader.cpp" />
     <ClCompile Include="SkeletonJoint.cpp" />
@@ -175,10 +179,14 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="objloader.hpp" />
     <ClInclude Include="OGLLine.h" />
+    <ClInclude Include="common.hpp" />
+    <ClInclude Include="problem1.hpp" />
     <ClInclude Include="OGLMesh.h" />
     <ClInclude Include="OGLObject.h" />
     <ClInclude Include="OGLShader.h" />
     <ClInclude Include="OGLWindow.h" />
+    <ClInclude Include="problem2.hpp" />
+    <ClInclude Include="problem3.hpp" />
     <ClInclude Include="problem4.h" />
     <ClInclude Include="RawDataLoader.h" />
     <ClInclude Include="SkeletonJoint.h" />

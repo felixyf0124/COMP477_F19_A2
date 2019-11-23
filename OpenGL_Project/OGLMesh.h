@@ -14,6 +14,8 @@ public:
 	
 	void createMesh(const GLfloat* vertices, const GLuint* indices, GLuint vertex_size, GLuint index_size);
 	void drawMesh();
+	void drawPoints();
+	void drawLines();
 
 	void clearMesh();
 	~OGLMesh();

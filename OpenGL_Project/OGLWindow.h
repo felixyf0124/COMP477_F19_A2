@@ -34,6 +34,6 @@ private:
 	int buffer_width, buffer_height;
 	string window_title;
 
-	//static void keyCallback(GLFWwindow* window, int key, int code, int action, int mode);
+	// static void keyCallback(GLFWwindow* window, int key, int code, int action, int mode);
 };
 

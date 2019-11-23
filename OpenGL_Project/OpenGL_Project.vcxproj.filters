@@ -39,6 +39,16 @@
     <ClCompile Include="OGLLine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+     <ClCompile Include="problem1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="problem2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="problem3.cpp">
     <ClCompile Include="problem4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -75,6 +85,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="problem4.h">
+     <ClInclude Include="problem1.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="problem2.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="problem3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
