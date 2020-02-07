@@ -10,6 +10,7 @@ Revision: 1.0
 **Due: November 15, 2019, 23:59**
 
 # Work as a team
+report https://github.com/felixyf0124/COMP477_F19_A2/blob/master/COMP477_a2_report.pdf
 
 ## Team 02
 
